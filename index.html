@@ -182,184 +182,6 @@ input[type="color"]{width:100%;height:44px;border:1px solid var(--card-border);b
 .personalization-note{margin-top:1rem;color:var(--text-muted);font-size:.85rem;line-height:1.45}
 .luminar-popup-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.42);display:none;align-items:center;justify-content:center;z-index:99999;backdrop-filter:blur(8px)}
 .luminar-popup-backdrop.active{display:flex}.luminar-popup{min-width:min(380px,calc(100vw - 40px));max-width:480px;border-radius:22px;padding:1.35rem;border:1px solid rgba(255,255,255,.16);box-shadow:0 30px 80px rgba(0,0,0,.45);text-align:left}.luminar-popup h3{font-family:var(--font-title)!important;margin-bottom:.5rem;font-size:1rem}.luminar-popup p{line-height:1.45;white-space:pre-wrap}.luminar-popup .btn{margin-top:1rem;width:100%}
-
-
-/* ===== MOBILE RESPONSIVE FIX - LUMINAR OS ===== */
-@media (max-width: 768px){
-  html,body{width:100%;max-width:100%;overflow-x:hidden!important;}
-  body{display:block!important;background-attachment:fixed;}
-
-  .sidebar,
-  body.sidebar-collapsed .sidebar{
-    position:sticky!important;
-    top:0!important;
-    z-index:999!important;
-    width:100%!important;
-    height:auto!important;
-    max-height:none!important;
-    padding:1rem 1rem .75rem!important;
-    border-right:0!important;
-    border-bottom:1px solid var(--card-border)!important;
-    background:rgba(10,15,36,.75)!important;
-    background-blend-mode:multiply!important;
-    backdrop-filter:blur(22px)!important;
-    -webkit-backdrop-filter:blur(22px)!important;
-  }
-  .sidebar::before{opacity:.75!important;mix-blend-mode:multiply!important;}
-  .sidebar-toggle{display:none!important;}
-  .logo-area{
-    margin:0 0 .8rem!important;
-    font-size:clamp(1.45rem,8vw,2.15rem)!important;
-    line-height:1!important;
-    width:max-content!important;
-    max-width:100%!important;
-  }
-  .logo-text,
-  .menu-label,
-  body.sidebar-collapsed .logo-text,
-  body.sidebar-collapsed .menu-label{
-    opacity:1!important;
-    max-width:180px!important;
-    pointer-events:auto!important;
-  }
-  .menu-list{
-    display:flex!important;
-    flex-direction:row!important;
-    gap:.55rem!important;
-    overflow-x:auto!important;
-    overflow-y:hidden!important;
-    padding-bottom:.35rem!important;
-    scroll-snap-type:x mandatory;
-    -webkit-overflow-scrolling:touch;
-  }
-  .menu-list::-webkit-scrollbar{height:0!important;}
-  .menu-item,
-  body.sidebar-collapsed .menu-item{
-    flex:0 0 auto!important;
-    justify-content:center!important;
-    gap:.55rem!important;
-    padding:.75rem .9rem!important;
-    border-radius:16px!important;
-    min-width:max-content!important;
-    scroll-snap-align:start;
-    font-size:.94rem!important;
-  }
-  .menu-icon{width:auto!important;flex:0 0 auto!important;font-size:1.15rem!important;}
-
-  .main-content,
-  body.sidebar-collapsed .main-content{
-    margin-left:0!important;
-    width:100%!important;
-    max-width:100%!important;
-    padding:1rem!important;
-  }
-  .header{
-    flex-direction:column!important;
-    align-items:flex-start!important;
-    gap:.9rem!important;
-    margin-bottom:1rem!important;
-  }
-  .header h1{font-size:clamp(1.65rem,8vw,2.1rem)!important;line-height:1.05!important;}
-  .header > div:last-child{width:100%!important;justify-content:space-between!important;}
-  .view-toggle{flex:1 1 190px!important;max-width:100%!important;}
-  .toggle-btn{flex:1!important;}
-  .profile-area{padding:.45rem .75rem!important;min-width:max-content!important;}
-
-  .card{
-    width:100%!important;
-    max-width:100%!important;
-    padding:1rem!important;
-    border-radius:20px!important;
-    margin-bottom:1rem!important;
-    overflow:hidden!important;
-  }
-  .card-title{font-size:1rem!important;line-height:1.25!important;align-items:flex-start!important;flex-wrap:wrap!important;}
-
-  .dashboard-brand-card{
-    display:flex!important;
-    flex-direction:column!important;
-    align-items:stretch!important;
-    gap:1rem!important;
-    padding:1rem!important;
-    min-height:auto!important;
-  }
-  .dashboard-brand-card h2{
-    font-size:clamp(1.45rem,8vw,2rem)!important;
-    line-height:1.12!important;
-    word-break:normal!important;
-  }
-  .dashboard-brand-card p{
-    font-size:.92rem!important;
-    line-height:1.45!important;
-    max-width:100%!important;
-  }
-  .dashboard-date-card{
-    width:100%!important;
-    min-width:0!important;
-    text-align:left!important;
-    padding:.9rem!important;
-    overflow:hidden!important;
-  }
-  .dashboard-date-card .date-text{font-size:.86rem!important;line-height:1.25!important;white-space:normal!important;}
-  .dashboard-date-card .time-text{font-size:clamp(1.55rem,10vw,2.35rem)!important;white-space:nowrap!important;}
-
-  .kpi-row{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:.75rem!important;}
-  .kpi-card{padding:.9rem!important;border-radius:18px!important;}
-  .kpi-card .label{font-size:.68rem!important;}
-  .kpi-card .num{font-size:1.55rem!important;}
-  .kpi-card .small{font-size:.68rem!important;line-height:1.25!important;}
-
-  .dashboard-grid,
-  .summary-grid,
-  .settings-shell,
-  .settings-grid,
-  .notebook-layout,
-  .scripts-layout,
-  .context-bar{
-    grid-template-columns:1fr!important;
-    gap:.85rem!important;
-  }
-  .summary-wide{grid-column:auto!important;}
-  .stats-container{flex-direction:column!important;align-items:flex-start!important;}
-  .progress-ring{width:120px!important;height:120px!important;}
-  .progress-ring:before{width:90px!important;height:90px!important;font-size:1.35rem!important;}
-  .tasks-list{max-height:none!important;}
-  .task-item{padding:.9rem!important;}
-  .task-header-row{flex-direction:column!important;align-items:flex-start!important;}
-
-  .toolbar-row{flex-direction:column!important;align-items:stretch!important;}
-  .toolbar-search-wrap{width:100%!important;min-width:0!important;}
-  .client-management-grid,.folder-grid{grid-template-columns:1fr!important;}
-  .client-card-actions{grid-template-columns:1fr!important;}
-  .client-select-row{grid-template-columns:1fr auto!important;}
-
-  .table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
-  .content-table,.radar-table{min-width:1180px!important;}
-  .content-table td,.radar-table td{padding:10px 6px!important;}
-  .title-chip-input{min-height:48px!important;}
-
-  .month-grid{min-width:720px!important;}
-  .day-cell{min-height:118px!important;padding:8px!important;}
-
-  .editor-meta-grid,.agenda-editor .field-grid{grid-template-columns:1fr!important;}
-  .agenda-editor{
-    left:10px!important;
-    right:10px!important;
-    top:88px!important;
-    width:auto!important;
-    max-height:calc(100vh - 110px)!important;
-  }
-
-  iframe#agenda-personal-frame{height:calc(100vh - 190px)!important;}
-}
-
-@media (max-width: 420px){
-  .main-content,body.sidebar-collapsed .main-content{padding:.85rem!important;}
-  .kpi-row{grid-template-columns:1fr!important;}
-  .dashboard-date-card .time-text{font-size:1.65rem!important;}
-  .menu-item,body.sidebar-collapsed .menu-item{font-size:.88rem!important;padding:.7rem .85rem!important;}
-  .logo-area{font-size:1.6rem!important;}
-}
 </style>
 </head>
 <body class="mode-macro">
@@ -429,31 +251,354 @@ input[type="color"]{width:100%;height:44px;border:1px solid var(--card-border);b
 </section>
 
 <section class="app-section" id="sec-agenda">
-<div class="card">
-  <div class="context-global-title">
-    <div>
-      <div class="card-title" style="margin-bottom:.25rem">⏳ Agenda Personal tipo Notion <span class="muted" style="font-size:.8rem">Sin conexión con el plan de contenido</span></div>
-      <p class="muted" style="font-size:.84rem">Tareas personales, reuniones, entregas y recordatorios. Este módulo se sincroniza con Supabase.</p>
-    </div>
-    <button class="btn-primary" onclick="addAgendaTask()">＋ Nueva tarea</button>
-  </div>
-  <div class="context-bar" style="grid-template-columns:1fr 1fr .7fr .8fr auto;">
-    <div class="field"><label>Mes</label><select class="select" id="agenda-month" onchange="setAgendaMonthYear()"></select></div>
-    <div class="field"><label>Año</label><input class="input" id="agenda-year" type="number" value="2026" onchange="setAgendaMonthYear()"></div>
-    <div class="field"><label>Vista</label><select class="select" id="agenda-view" onchange="renderAgenda()"><option value="month">Mes</option><option value="list">Lista</option></select></div>
-    <div class="field"><label>Filtro</label><select class="select" id="agenda-filter" onchange="filterAgenda=this.value;renderAgenda()"><option value="all">Todo</option><option value="overdue">Vencidas</option><option value="today">Hoy</option><option value="due-soon">Próximas</option><option value="on-track">En plan</option></select></div>
-    <button class="btn" onclick="loadAgendaFromSupabase()">↻ Sincronizar</button>
-  </div>
-  <div class="toolbar-row" style="margin-bottom:1rem">
-    <button class="btn" onclick="changeAgendaMonth(-1)">‹ Mes anterior</button>
-    <button class="btn" onclick="goAgendaToday()">Hoy</button>
-    <button class="btn" onclick="changeAgendaMonth(1)">Mes siguiente ›</button>
-    <span class="muted" id="agenda-sync-status" style="font-size:.82rem">Sincronización lista</span>
-  </div>
-  <div id="agenda-zone"></div>
+<div class="card" style="padding:0; overflow:hidden;">
+<div style="display:flex; justify-content:space-between; align-items:center; padding:1rem 1.2rem; border-bottom:1px solid var(--card-border);">
+<div>
+<div class="card-title" style="margin:0;">Agenda Personal tipo Notion</div>
+<p class="muted" style="font-size:.82rem; margin-top:.25rem;">Módulo independiente. No se conecta ni mezcla con el plan de contenido.</p>
+</div>
+<span class="detail-tag">⏳ Personal</span>
+</div>
+<iframe id="agenda-personal-frame" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;es&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot; /&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot; /&gt;
+  &lt;title&gt;Luminar OS - Calendario Notion Engine&lt;/title&gt;
+  &lt;link href=&quot;https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;family=Orbitron:wght@500;700&amp;display=swap&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;style&gt;
+    :root{
+      --bg-tipo-gradiente: linear-gradient;
+      --bg-gradient-dir: 135deg;
+      --bg-color-1:#0a0f24;
+      --bg-color-2:#1a0b2e;
+      --sidebar-color-1:#04060f;
+      --sidebar-color-2:#0b0514;
+      --card-bg:rgba(255,255,255,.045);
+      --card-bg-strong:rgba(255,255,255,.075);
+      --card-border:rgba(255,255,255,.09);
+      --text-main:#fff;
+      --text-muted:#8a99ad;
+      --neon-azul:#00f0ff;
+      --neon-rosa:#ff00ff;
+      --neon-verde:#00e676;
+      --neon-amarillo:#ffcc00;
+      --neon-rojo:#ff3366;
+      --btn-glass-color:#00f0ff;
+      --btn-glass-color-rgb:0,240,255;
+      --btn-glass-opacity:.15;
+      --btn-glass-blur:15px;
+      --btn-glass-glow-filter:drop-shadow(0 0 12px rgba(0,240,255,.4));
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    body{background:transparent!important;color:var(--text-main);min-height:100vh;display:block;overflow-x:hidden;font-family:&#x27;Plus Jakarta Sans&#x27;,sans-serif}
+    body:before{display:none!important}
+    .sidebar{width:260px;background:linear-gradient(to bottom,var(--sidebar-color-1),var(--sidebar-color-2));backdrop-filter:blur(25px);border-right:1px solid var(--card-border);display:flex;flex-direction:column;padding:2rem 1.5rem;position:fixed;height:100vh;z-index:100}
+    .logo-area{font-size:1.8rem;font-weight:800;letter-spacing:2px;background:linear-gradient(to right,#00f0ff,#ff00ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:3rem;font-family:&#x27;Orbitron&#x27;,sans-serif}
+    .menu-list{list-style:none;display:flex;flex-direction:column;gap:.8rem}.menu-item{display:flex;align-items:center;gap:15px;padding:1rem;border-radius:12px;color:var(--text-muted);text-decoration:none;font-weight:600;cursor:pointer;transition:.2s}.menu-item.active,.menu-item:hover{color:white;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+    .main-content{margin-left:260px;width:calc(100% - 260px);padding:2rem;min-height:100vh}.header{margin-bottom:2rem;display:flex;justify-content:space-between;align-items:center}.profile-area{display:flex;align-items:center;gap:12px;background:var(--card-bg);padding:.5rem 1.2rem;border-radius:50px;border:1px solid var(--card-border);backdrop-filter:blur(15px)}.profile-pic{width:35px;height:35px;border-radius:50%;border:2px solid var(--neon-azul);object-fit:cover}.app-section{display:none}.app-section.active{display:block}.card{background:var(--card-bg);border:1px solid var(--card-border);border-radius:24px;padding:1.4rem;backdrop-filter:blur(14px);box-shadow:0 20px 40px rgba(0,0,0,.22)}
+    .calendar-header-controls{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:.35rem 0 1.4rem}.month-title{font-size:1.55rem;line-height:1.15;margin:0 0 .4rem;font-weight:800;font-family:&#x27;Orbitron&#x27;,sans-serif;text-transform:uppercase;letter-spacing:1px}.calendar-actions{display:flex;gap:.7rem;align-items:center;flex-wrap:wrap}.view-selector{display:flex;background:rgba(255,255,255,.035);padding:6px;border-radius:14px;border:1px solid var(--card-border);gap:5px}.view-btn{background:transparent;border:0;color:var(--text-muted);padding:8px 14px;font-weight:700;border-radius:10px;cursor:pointer}.view-btn.active{background:#fff;color:#0a0f24}.btn-neon-save,.btn-soft{background:rgba(var(--btn-glass-color-rgb),var(--btn-glass-opacity));box-shadow:0 8px 32px rgba(0,0,0,.37),inset 0 0 0 1px rgba(255,255,255,.06);backdrop-filter:blur(var(--btn-glass-blur));border:1px solid rgba(var(--btn-glass-color-rgb),.3);color:white;filter:var(--btn-glass-glow-filter);padding:11px 14px;font-size:.82rem;font-weight:800;border-radius:12px;cursor:pointer;letter-spacing:.2px}.btn-soft{filter:none;background:rgba(255,255,255,.05);border-color:var(--card-border)}
+    .notion-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;flex-wrap:wrap;color:var(--text-muted);font-size:.82rem}.notion-toolbar strong{color:white}.legend{display:flex;gap:8px;flex-wrap:wrap}.legend-pill{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.04);border:1px solid var(--card-border);border-radius:999px;padding:5px 9px;font-size:.72rem}.dot{width:8px;height:8px;border-radius:50%}
+    .month-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day-name{text-align:center;font-weight:800;color:var(--text-muted);font-size:.74rem;padding:8px;text-transform:uppercase;letter-spacing:1px}.day-cell{position:relative;background:rgba(255,255,255,.018);border:1px solid var(--card-border);min-height:136px;border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:7px;transition:.2s;overflow:visible}.day-cell:hover{background:rgba(255,255,255,.035);border-color:rgba(255,255,255,.16)}.day-cell.empty{opacity:.18}.day-cell.today{border-color:var(--neon-amarillo);box-shadow:0 0 18px rgba(255,204,0,.12),inset 0 0 0 1px rgba(255,204,0,.18)}.cell-number{font-weight:800;font-size:.9rem;color:rgba(255,255,255,.88);display:flex;justify-content:space-between;align-items:center}.today .cell-number{color:var(--neon-amarillo)}.add-task-day{opacity:0;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);color:var(--text-muted);width:24px;height:24px;border-radius:8px;cursor:pointer;transition:.2s}.day-cell:hover .add-task-day{opacity:1}.task-stack{display:flex;flex-direction:column;gap:6px}.notion-block{--task-color:#00f0ff;position:relative;display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;width:100%;min-height:34px;padding:7px 8px 7px 10px;border-radius:10px;background:color-mix(in srgb,var(--task-color) 14%, transparent);border:1px solid color-mix(in srgb,var(--task-color) 32%, transparent);border-left:3px solid var(--task-color);box-shadow:0 0 14px color-mix(in srgb,var(--task-color) 12%, transparent);cursor:text;transition:.18s}.notion-block:hover{transform:translateY(-1px);background:color-mix(in srgb,var(--task-color) 20%, transparent)}.notion-block:focus-within{outline:1px solid var(--task-color);box-shadow:0 0 20px color-mix(in srgb,var(--task-color) 24%, transparent)}.notion-block[data-status=&quot;overdue&quot;]{--task-color:var(--neon-rojo)}.notion-block[data-status=&quot;today&quot;]{--task-color:var(--neon-amarillo)}.notion-block[data-status=&quot;due-soon&quot;]{--task-color:var(--neon-azul)}.notion-block[data-status=&quot;on-track&quot;]{--task-color:var(--neon-verde)}.notion-block[data-status=&quot;completed&quot;]{--task-color:#8a99ad;opacity:.65}.task-title{font-size:.73rem;font-weight:800;line-height:1.18;outline:none;word-break:break-word}.task-title[contenteditable=&quot;true&quot;]:empty:before{content:&#x27;Nueva tarea&#x27;;color:rgba(255,255,255,.35)}.task-meta-line{grid-column:1/-1;display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-top:2px}.tag-chip{display:inline-flex;align-items:center;border-radius:999px;padding:2px 7px;font-size:.61rem;font-weight:800;background:color-mix(in srgb,var(--tag-color,#00f0ff) 25%, transparent);color:var(--tag-color,#00f0ff);border:1px solid color-mix(in srgb,var(--tag-color,#00f0ff) 38%, transparent);max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.date-chip{font-size:.6rem;color:var(--task-color);font-weight:800;background:color-mix(in srgb,var(--task-color) 12%, transparent);border:1px solid color-mix(in srgb,var(--task-color) 24%, transparent);border-radius:999px;padding:2px 6px;white-space:nowrap}.task-menu-btn{background:rgba(0,0,0,.22);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.72);border-radius:7px;min-width:23px;height:23px;cursor:pointer}.task-menu-btn:hover{color:#fff;border-color:var(--task-color)}
+    .editor-panel{position:fixed;right:26px;top:96px;width:min(430px,calc(100vw - 40px));max-height:calc(100vh - 120px);overflow:auto;background:rgba(9,11,28,.86);border:1px solid rgba(255,255,255,.12);border-radius:22px;padding:18px;backdrop-filter:blur(24px);box-shadow:0 24px 70px rgba(0,0,0,.48),0 0 40px rgba(0,240,255,.06);z-index:300;display:none}.editor-panel.active{display:block}.panel-head{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:14px}.panel-head h3{font-family:&#x27;Orbitron&#x27;,sans-serif;font-size:1rem}.close-panel{background:transparent;border:0;color:#fff;font-size:1.1rem;cursor:pointer}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.config-field{display:flex;flex-direction:column;gap:7px;margin-bottom:12px}.config-field label{font-size:.72rem;color:var(--text-muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px}.input-dark{background:rgba(0,0,0,.28);border:1px solid var(--card-border);color:#fff;padding:10px 12px;border-radius:12px;font-size:.9rem;outline:none;width:100%}.input-dark:focus{border-color:var(--neon-azul);box-shadow:0 0 12px rgba(0,240,255,.15)}.tag-row{display:grid;grid-template-columns:1fr 46px;gap:8px;align-items:center}.quick-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px}.quick-tag{border:1px solid color-mix(in srgb,var(--qt-color) 35%, transparent);background:color-mix(in srgb,var(--qt-color) 18%, transparent);color:var(--qt-color);border-radius:999px;padding:6px 9px;font-size:.7rem;font-weight:800;cursor:pointer}.option-row{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(255,255,255,.035);border:1px solid var(--card-border);padding:10px;border-radius:12px;margin-bottom:10px}.option-row span{font-size:.78rem;font-weight:700}.switch{appearance:none;width:42px;height:24px;border-radius:999px;background:rgba(255,255,255,.12);position:relative;cursor:pointer}.switch:checked{background:rgba(57,255,20,.28)}.switch:before{content:&quot;&quot;;position:absolute;width:18px;height:18px;border-radius:50%;background:white;left:3px;top:3px;transition:.18s}.switch:checked:before{left:21px}.panel-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}.danger{border-color:rgba(255,51,102,.35)!important;color:#ff9db5!important}.saved-hint{font-size:.7rem;color:var(--neon-verde);display:none;margin-top:6px}.saved-hint.active{display:block}
+    .config-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem}.section-title{font-weight:800;margin-bottom:.8rem}.slider-neon{width:100%}
+    .quick-tag-wrap{display:inline-flex;align-items:center;border:1px solid color-mix(in srgb,var(--qt-color) 35%, transparent);background:color-mix(in srgb,var(--qt-color) 18%, transparent);border-radius:999px;overflow:hidden}
+    .quick-tag-wrap .quick-tag{border:0;background:transparent;border-radius:0;padding:6px 8px;color:var(--qt-color)}
+    .delete-tag-btn{width:24px;height:24px;border:0;border-left:1px solid color-mix(in srgb,var(--qt-color) 30%, transparent);background:rgba(255,255,255,.04);color:var(--qt-color);font-weight:900;cursor:pointer;line-height:1}
+    .delete-tag-btn:hover{background:rgba(255,51,102,.18);color:#ff9db5}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:var(--task-color);box-shadow:0 0 8px var(--task-color);display:inline-block;margin-right:4px;flex:0 0 auto}
+    .date-chip{color:var(--task-color)!important;font-weight:800;text-shadow:0 0 8px color-mix(in srgb,var(--task-color) 30%, transparent)}
+
+    .tag-context-menu{position:fixed;min-width:230px;background:rgba(7,10,24,.94);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:8px;backdrop-filter:blur(22px);box-shadow:0 18px 48px rgba(0,0,0,.5),0 0 24px rgba(0,240,255,.08);z-index:999;display:none}
+    .tag-context-menu.active{display:block}
+    .tag-context-title{font-size:.72rem;color:var(--text-muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;padding:8px 10px 6px;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .tag-context-option{width:100%;display:flex;align-items:center;gap:9px;background:transparent;border:0;color:white;text-align:left;padding:9px 10px;border-radius:10px;font-size:.82rem;font-weight:800;cursor:pointer}
+    .tag-context-option:hover{background:rgba(255,255,255,.06)}
+    .tag-context-option.danger{color:#ff9db5!important}
+    .tag-context-option.disabled{opacity:.45;cursor:not-allowed;color:var(--text-muted)!important}
+    .quick-tag-wrap[data-user-created=&quot;true&quot;]{cursor:context-menu}
+
+    .calendar-view-selector{display:flex;background:rgba(255,255,255,.035);padding:6px;border-radius:14px;border:1px solid var(--card-border);gap:5px;flex-wrap:wrap}
+    .cal-view-btn{background:transparent;border:0;color:var(--text-muted);padding:8px 12px;font-weight:800;border-radius:10px;cursor:pointer;font-size:.78rem}
+    .cal-view-btn.active{background:rgba(255,255,255,.92);color:#0a0f24}
+    .legend-pill{cursor:pointer;transition:.18s;user-select:none}.legend-pill:hover{transform:translateY(-1px);border-color:rgba(255,255,255,.22)}.legend-pill.active-filter{background:rgba(255,255,255,.12);color:#fff;box-shadow:0 0 16px rgba(0,240,255,.08)}
+    .time-chip{font-size:.6rem;color:var(--task-color);font-weight:900;background:color-mix(in srgb,var(--task-color) 16%, transparent);border:1px solid color-mix(in srgb,var(--task-color) 30%, transparent);border-radius:999px;padding:2px 6px;white-space:nowrap;text-shadow:0 0 8px color-mix(in srgb,var(--task-color) 30%, transparent)}
+
+    .day-cell.holiday{border-color:#ff7a00;background:linear-gradient(180deg,rgba(255,122,0,.11),rgba(255,204,0,.035));box-shadow:0 0 22px rgba(255,122,0,.18),inset 0 0 0 1px rgba(255,204,0,.16)}
+    .day-cell.holiday .cell-number span:first-child{color:#ffcc00;text-shadow:0 0 10px rgba(255,204,0,.25)}
+    .holiday-badge{display:inline-flex;align-items:center;gap:4px;width:max-content;max-width:100%;padding:3px 7px;border-radius:999px;background:rgba(255,204,0,.12);border:1px solid rgba(255,204,0,.28);color:#ffcc00;font-size:.58rem;font-weight:900;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .holiday-badge:before{content:&#x27;🇵🇪&#x27;}
+    .notion-block[data-view-mode=&quot;advanced&quot;]{grid-template-columns:1fr auto;padding:9px 10px;min-height:48px}
+    .notion-block[data-view-mode=&quot;advanced&quot;] .task-title{font-size:.78rem}
+    .advanced-task-details{display:none;grid-column:1/-1;gap:5px;flex-wrap:wrap;margin-top:2px}
+    .notion-block[data-view-mode=&quot;advanced&quot;] .advanced-task-details{display:flex}
+    .advanced-mini-chip{font-size:.58rem;color:rgba(255,255,255,.78);background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.09);border-radius:999px;padding:2px 6px;font-weight:800}
+
+    .year-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.year-month-card{min-height:145px;background:rgba(255,255,255,.025);border:1px solid var(--card-border);border-radius:16px;padding:12px}.year-month-card h4{font-family:&#x27;Orbitron&#x27;,sans-serif;font-size:.88rem;margin-bottom:8px}.year-task-line{font-size:.68rem;font-weight:800;border-left:3px solid var(--task-color);padding:5px 7px;margin:5px 0;border-radius:7px;background:color-mix(in srgb,var(--task-color) 13%, transparent);color:#fff}
+    .week-grid,.day-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}.day-grid{grid-template-columns:1fr}.hour-grid{display:flex;flex-direction:column;gap:8px}.hour-row{display:grid;grid-template-columns:74px 1fr;gap:10px;align-items:stretch}.hour-label{color:var(--text-muted);font-size:.72rem;font-weight:800;padding-top:10px;text-align:right}.hour-slot{min-height:56px;border:1px solid var(--card-border);background:rgba(255,255,255,.018);border-radius:14px;padding:8px}.view-empty{color:var(--text-muted);font-size:.85rem;padding:18px;border:1px dashed var(--card-border);border-radius:16px;text-align:center}
+    @media(max-width:900px){.year-grid{grid-template-columns:1fr}.week-grid{grid-template-columns:1fr}.calendar-view-selector{width:100%}.cal-view-btn{flex:1}.hour-row{grid-template-columns:54px 1fr}}
+
+    @media(max-width:900px){body{flex-direction:column}.sidebar{position:relative;width:100%;height:auto;padding:1rem}.logo-area{margin-bottom:.7rem}.menu-list{flex-direction:row;overflow:auto}.main-content{margin-left:0;width:100%;padding:1rem}.calendar-header-controls{align-items:flex-start;flex-direction:column}.month-grid{gap:5px}.day-cell{min-height:120px;padding:7px}.field-grid,.config-grid{grid-template-columns:1fr}.editor-panel{left:12px;right:12px;top:70px;width:auto}.header{flex-direction:column;align-items:flex-start;gap:1rem}}
+  
+/* Integrado en Luminar: se elimina identidad visual duplicada */
+.sidebar{display:none!important}
+.header{display:none!important}
+.main-content{margin-left:0!important;width:100%!important;padding:0!important;min-height:auto!important}
+@media(max-width:900px){.main-content{margin-left:0!important;width:100%!important;padding:0!important}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+&lt;main class=&quot;main-content&quot;&gt;
+  
+  &lt;section id=&quot;sec-calendario&quot; class=&quot;app-section active&quot;&gt;
+    &lt;div class=&quot;calendar-header-controls&quot;&gt;&lt;div&gt;&lt;div class=&quot;month-title&quot; id=&quot;calendar-title&quot;&gt;Junio 2026&lt;/div&gt;&lt;p style=&quot;color:var(--text-muted);font-size:.85rem;margin-top:4px&quot;&gt;Base temporal: 2026-06-19 · hora base 09:00&lt;/p&gt;&lt;/div&gt;&lt;div class=&quot;calendar-actions&quot;&gt;&lt;div class=&quot;calendar-nav&quot; style=&quot;display:flex;gap:.45rem;align-items:center&quot;&gt;&lt;button class=&quot;btn-soft&quot; onclick=&quot;cambiarMesAgenda(-1)&quot; title=&quot;Mes anterior&quot;&gt;‹ Mes&lt;/button&gt;&lt;button class=&quot;btn-soft&quot; onclick=&quot;irMesActualAgenda()&quot; title=&quot;Volver a junio 2026&quot;&gt;Hoy&lt;/button&gt;&lt;button class=&quot;btn-soft&quot; onclick=&quot;cambiarMesAgenda(1)&quot; title=&quot;Mes siguiente&quot;&gt;Mes ›&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;calendar-view-selector&quot;&gt;&lt;button class=&quot;cal-view-btn&quot; onclick=&quot;setCalendarView(&#x27;year&#x27;,this)&quot;&gt;Año&lt;/button&gt;&lt;button class=&quot;cal-view-btn active&quot; onclick=&quot;setCalendarView(&#x27;month&#x27;,this)&quot;&gt;Mes&lt;/button&gt;&lt;button class=&quot;cal-view-btn&quot; onclick=&quot;setCalendarView(&#x27;week&#x27;,this)&quot;&gt;Semana&lt;/button&gt;&lt;button class=&quot;cal-view-btn&quot; onclick=&quot;setCalendarView(&#x27;day&#x27;,this)&quot;&gt;Día&lt;/button&gt;&lt;button class=&quot;cal-view-btn&quot; onclick=&quot;setCalendarView(&#x27;hour&#x27;,this)&quot;&gt;Hora&lt;/button&gt;&lt;/div&gt;&lt;div class=&quot;view-selector&quot;&gt;&lt;button class=&quot;view-btn active&quot; data-view=&quot;macro&quot; onclick=&quot;setViewMode(&#x27;macro&#x27;,this)&quot;&gt;Macro&lt;/button&gt;&lt;button class=&quot;view-btn&quot; data-view=&quot;advanced&quot; onclick=&quot;setViewMode(&#x27;advanced&#x27;,this)&quot;&gt;Advanced&lt;/button&gt;&lt;/div&gt;&lt;button class=&quot;btn-neon-save&quot; onclick=&quot;crearTareaEnHoy()&quot;&gt;+ Nueva tarea&lt;/button&gt;&lt;/div&gt;&lt;/div&gt;
+    &lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;notion-toolbar&quot;&gt;&lt;strong&gt;Vista de calendario&lt;/strong&gt;&lt;div class=&quot;legend&quot;&gt;&lt;span class=&quot;legend-pill active-filter&quot; data-filter=&quot;all&quot; onclick=&quot;setStatusFilter(&#x27;all&#x27;,this)&quot;&gt;&lt;i class=&quot;dot&quot; style=&quot;background:#fff&quot;&gt;&lt;/i&gt;Todo&lt;/span&gt;&lt;span class=&quot;legend-pill&quot; data-filter=&quot;overdue&quot; onclick=&quot;setStatusFilter(&#x27;overdue&#x27;,this)&quot;&gt;&lt;i class=&quot;dot&quot; style=&quot;background:#ff3366&quot;&gt;&lt;/i&gt;Vencida&lt;/span&gt;&lt;span class=&quot;legend-pill&quot; data-filter=&quot;today&quot; onclick=&quot;setStatusFilter(&#x27;today&#x27;,this)&quot;&gt;&lt;i class=&quot;dot&quot; style=&quot;background:#ffcc00&quot;&gt;&lt;/i&gt;Hoy&lt;/span&gt;&lt;span class=&quot;legend-pill&quot; data-filter=&quot;due-soon&quot; onclick=&quot;setStatusFilter(&#x27;due-soon&#x27;,this)&quot;&gt;&lt;i class=&quot;dot&quot; style=&quot;background:#00f0ff&quot;&gt;&lt;/i&gt;Urgente&lt;/span&gt;&lt;span class=&quot;legend-pill&quot; data-filter=&quot;on-track&quot; onclick=&quot;setStatusFilter(&#x27;on-track&#x27;,this)&quot;&gt;&lt;i class=&quot;dot&quot; style=&quot;background:#39ff14&quot;&gt;&lt;/i&gt;Segura&lt;/span&gt;&lt;/div&gt;&lt;/div&gt;&lt;div id=&quot;calendar-render-zone&quot;&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;/section&gt;
+  &lt;section id=&quot;sec-configuracion&quot; class=&quot;app-section&quot;&gt;&lt;div class=&quot;card&quot;&gt;&lt;div class=&quot;config-grid&quot;&gt;&lt;div&gt;&lt;div class=&quot;section-title&quot;&gt;🎨 Fondo Lumínico Avanzado&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Colores de fondo&lt;/label&gt;&lt;div style=&quot;display:flex;gap:15px;align-items:center&quot;&gt;&lt;input type=&quot;color&quot; id=&quot;picker-color-fondo-1&quot; value=&quot;#0a0f24&quot; oninput=&quot;actualizarFondoManual()&quot;&gt;&lt;span&gt;➔&lt;/span&gt;&lt;input type=&quot;color&quot; id=&quot;picker-color-fondo-2&quot; value=&quot;#1a0b2e&quot; oninput=&quot;actualizarFondoManual()&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Dirección&lt;/label&gt;&lt;select class=&quot;input-dark&quot; id=&quot;select-direccion-fondo&quot; onchange=&quot;actualizarFondoManual()&quot;&gt;&lt;option value=&quot;linear-gradient|135deg&quot;&gt;↘️ Diagonal Abajo-Derecha&lt;/option&gt;&lt;option value=&quot;linear-gradient|45deg&quot;&gt;↗️ Diagonal Arriba-Derecha&lt;/option&gt;&lt;option value=&quot;linear-gradient|to right&quot;&gt;➡️ Horizontal&lt;/option&gt;&lt;option value=&quot;linear-gradient|to bottom&quot;&gt;⬇️ Vertical&lt;/option&gt;&lt;option value=&quot;radial-gradient|circle at center&quot;&gt;🎯 Radial Central&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;&lt;div&gt;&lt;div class=&quot;section-title&quot;&gt;💎 Botones Glass&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Color Base&lt;/label&gt;&lt;input type=&quot;color&quot; id=&quot;picker-color-glass&quot; value=&quot;#00f0ff&quot; oninput=&quot;actualizarBotonesGlassManual()&quot;&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label id=&quot;lbl-opacity-glass&quot;&gt;Intensidad: 15%&lt;/label&gt;&lt;input type=&quot;range&quot; min=&quot;5&quot; max=&quot;100&quot; value=&quot;15&quot; id=&quot;slider-opacity-glass&quot; oninput=&quot;actualizarBotonesGlassManual()&quot;&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label id=&quot;lbl-blur-glass&quot;&gt;Blur: 15px&lt;/label&gt;&lt;input type=&quot;range&quot; min=&quot;0&quot; max=&quot;30&quot; value=&quot;15&quot; id=&quot;slider-blur-glass&quot; oninput=&quot;actualizarBotonesGlassManual()&quot;&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label id=&quot;lbl-glow-glass&quot;&gt;Glow: 100%&lt;/label&gt;&lt;input type=&quot;range&quot; min=&quot;30&quot; max=&quot;200&quot; value=&quot;100&quot; id=&quot;slider-glow-glass&quot; oninput=&quot;actualizarBotonesGlassManual()&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;/main&gt;
+
+&lt;aside class=&quot;editor-panel&quot; id=&quot;editor-panel&quot;&gt;
+  &lt;div class=&quot;panel-head&quot;&gt;&lt;h3&gt;Editar tarea&lt;/h3&gt;&lt;button class=&quot;close-panel&quot; onclick=&quot;cerrarEditor()&quot;&gt;✕&lt;/button&gt;&lt;/div&gt;
+  &lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Título editable&lt;/label&gt;&lt;input class=&quot;input-dark&quot; id=&quot;edit-title&quot; oninput=&quot;syncEditorToTask()&quot; placeholder=&quot;Nombre de tarea&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;field-grid&quot;&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Fecha de inicio&lt;/label&gt;&lt;input class=&quot;input-dark&quot; type=&quot;date&quot; id=&quot;edit-start-date&quot; onchange=&quot;syncEditorToTask(true)&quot;&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Fecha de fin de tarea&lt;/label&gt;&lt;input class=&quot;input-dark&quot; type=&quot;date&quot; id=&quot;edit-end-date&quot; onchange=&quot;syncEditorToTask(true)&quot;&gt;&lt;/div&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Hora de entrega&lt;/label&gt;&lt;input class=&quot;input-dark&quot; type=&quot;time&quot; id=&quot;edit-delivery-time&quot; onchange=&quot;syncEditorToTask(true)&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Etiqueta&lt;/label&gt;&lt;div class=&quot;tag-row&quot;&gt;&lt;input class=&quot;input-dark&quot; id=&quot;edit-tag&quot; list=&quot;default-tags-list&quot; oninput=&quot;syncEditorToTask()&quot; placeholder=&quot;Ej. Trabajo&quot;&gt;&lt;input class=&quot;input-dark&quot; type=&quot;color&quot; id=&quot;edit-tag-color&quot; onchange=&quot;syncEditorToTask()&quot; title=&quot;Color de etiqueta personalizada&quot;&gt;&lt;/div&gt;&lt;datalist id=&quot;default-tags-list&quot;&gt;&lt;/datalist&gt;&lt;div class=&quot;quick-tags&quot; id=&quot;quick-tags&quot;&gt;&lt;/div&gt;&lt;span class=&quot;saved-hint&quot; id=&quot;saved-hint&quot;&gt;Etiqueta guardada como predeterminada.&lt;/span&gt;&lt;/div&gt;
+  &lt;div class=&quot;option-row&quot;&gt;&lt;span&gt;Aumentar etiqueta visualmente&lt;/span&gt;&lt;input class=&quot;switch&quot; type=&quot;checkbox&quot; id=&quot;edit-tag-large&quot; onchange=&quot;syncEditorToTask()&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;option-row&quot;&gt;&lt;span&gt;Guardar etiqueta como predeterminada&lt;/span&gt;&lt;button class=&quot;btn-soft&quot; onclick=&quot;guardarEtiquetaPredeterminada()&quot;&gt;Guardar&lt;/button&gt;&lt;/div&gt;
+  &lt;div class=&quot;field-grid&quot;&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Estado&lt;/label&gt;&lt;select class=&quot;input-dark&quot; id=&quot;edit-state&quot; onchange=&quot;syncEditorToTask()&quot;&gt;&lt;option&gt;Pendiente&lt;/option&gt;&lt;option&gt;En proceso&lt;/option&gt;&lt;option&gt;Completado&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Pilar&lt;/label&gt;&lt;select class=&quot;input-dark&quot; id=&quot;edit-pilar&quot; onchange=&quot;syncEditorToTask()&quot;&gt;&lt;option value=&quot;estrategia&quot;&gt;Estrategia&lt;/option&gt;&lt;option value=&quot;contenido&quot;&gt;Contenido&lt;/option&gt;&lt;option value=&quot;edicion&quot;&gt;Edición&lt;/option&gt;&lt;option value=&quot;merchandising&quot;&gt;Merchandising&lt;/option&gt;&lt;option value=&quot;ventas&quot;&gt;Ventas&lt;/option&gt;&lt;option value=&quot;cliente&quot;&gt;Cliente&lt;/option&gt;&lt;/select&gt;&lt;/div&gt;&lt;/div&gt;
+  &lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Drive / Script&lt;/label&gt;&lt;input class=&quot;input-dark&quot; id=&quot;edit-drive-link&quot; oninput=&quot;syncEditorToTask()&quot; placeholder=&quot;https://drive.google.com/...&quot;&gt;&lt;/div&gt;
+  &lt;div class=&quot;config-field&quot;&gt;&lt;label&gt;Notas&lt;/label&gt;&lt;textarea class=&quot;input-dark&quot; id=&quot;edit-notes&quot; oninput=&quot;syncEditorToTask()&quot; rows=&quot;3&quot; placeholder=&quot;Notas internas&quot;&gt;&lt;/textarea&gt;&lt;/div&gt;
+  &lt;div class=&quot;panel-actions&quot;&gt;&lt;button class=&quot;btn-soft&quot; onclick=&quot;duplicarTareaActiva()&quot;&gt;Duplicar&lt;/button&gt;&lt;button class=&quot;btn-soft danger&quot; onclick=&quot;eliminarTareaActiva()&quot;&gt;Eliminar&lt;/button&gt;&lt;/div&gt;
+&lt;/aside&gt;
+
+&lt;div class=&quot;tag-context-menu&quot; id=&quot;tag-context-menu&quot; role=&quot;menu&quot; aria-hidden=&quot;true&quot;&gt;
+  &lt;div class=&quot;tag-context-title&quot; id=&quot;tag-context-title&quot;&gt;🏷️ Etiqueta&lt;/div&gt;
+  &lt;button class=&quot;tag-context-option&quot; type=&quot;button&quot; onclick=&quot;aplicarEtiquetaDesdeContextMenu()&quot;&gt;✅ Usar etiqueta&lt;/button&gt;
+  &lt;button class=&quot;tag-context-option danger&quot; type=&quot;button&quot; id=&quot;tag-context-delete&quot; onclick=&quot;eliminarEtiquetaDesdeContextMenu()&quot;&gt;🗑️ Eliminar etiqueta&lt;/button&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+  let anioActual=2026, mesActual=5, diaHoy=19;
+  const mesesAgenda=[&#x27;Enero&#x27;,&#x27;Febrero&#x27;,&#x27;Marzo&#x27;,&#x27;Abril&#x27;,&#x27;Mayo&#x27;,&#x27;Junio&#x27;,&#x27;Julio&#x27;,&#x27;Agosto&#x27;,&#x27;Septiembre&#x27;,&#x27;Octubre&#x27;,&#x27;Noviembre&#x27;,&#x27;Diciembre&#x27;];
+  const HOY_ISO=&#x27;2026-06-19&#x27;;
+  const BASE_NOW=&#x27;2026-06-19T09:00:00&#x27;;
+  const STORAGE_HOLIDAYS_PE=&#x27;luminar_peru_holidays_2026_v1&#x27;;
+  const PERU_HOLIDAYS_2026_FALLBACK=[
+    {date:&#x27;2026-01-01&#x27;,localName:&#x27;Año Nuevo&#x27;},
+    {date:&#x27;2026-04-02&#x27;,localName:&#x27;Jueves Santo&#x27;},
+    {date:&#x27;2026-04-03&#x27;,localName:&#x27;Viernes Santo&#x27;},
+    {date:&#x27;2026-05-01&#x27;,localName:&#x27;Día del Trabajo&#x27;},
+    {date:&#x27;2026-06-07&#x27;,localName:&#x27;Batalla de Arica y Día de la Bandera&#x27;},
+    {date:&#x27;2026-06-29&#x27;,localName:&#x27;San Pedro y San Pablo&#x27;},
+    {date:&#x27;2026-07-23&#x27;,localName:&#x27;Día de la Fuerza Aérea del Perú&#x27;},
+    {date:&#x27;2026-07-28&#x27;,localName:&#x27;Fiestas Patrias&#x27;},
+    {date:&#x27;2026-07-29&#x27;,localName:&#x27;Fiestas Patrias&#x27;},
+    {date:&#x27;2026-08-06&#x27;,localName:&#x27;Batalla de Junín&#x27;},
+    {date:&#x27;2026-08-30&#x27;,localName:&#x27;Santa Rosa de Lima&#x27;},
+    {date:&#x27;2026-10-08&#x27;,localName:&#x27;Combate de Angamos&#x27;},
+    {date:&#x27;2026-11-01&#x27;,localName:&#x27;Todos los Santos&#x27;},
+    {date:&#x27;2026-12-08&#x27;,localName:&#x27;Inmaculada Concepción&#x27;},
+    {date:&#x27;2026-12-09&#x27;,localName:&#x27;Batalla de Ayacucho&#x27;},
+    {date:&#x27;2026-12-25&#x27;,localName:&#x27;Navidad&#x27;}
+  ];
+  let peruHolidays=loadPeruHolidaysLocal();
+
+  let viewMode=&#x27;macro&#x27;;
+  let calendarView=&#x27;month&#x27;;
+  let statusFilter=&#x27;all&#x27;;
+  let activeTaskId=null;
+  const STORAGE_TASKS=&#x27;luminar_notion_tasks_v4&#x27;;
+  const STORAGE_TAGS=&#x27;luminar_default_tags_v4&#x27;;
+  const seedTasks=[
+    {id:&#x27;task-001&#x27;,title:&#x27;Testimonios&#x27;,startDate:&#x27;2026-06-08&#x27;,endDate:&#x27;2026-06-08&#x27;,tag:&#x27;tarea&#x27;,tagColor:&#x27;#00e676&#x27;,tagLarge:false,deliveryTime:&#x27;18:00&#x27;,state:&#x27;Pendiente&#x27;,pilar:&#x27;contenido&#x27;,driveLink:&#x27;&#x27;,notes:&#x27;&#x27;,owner:&#x27;Leo&#x27;},
+    {id:&#x27;task-002&#x27;,title:&#x27;Entrega Reel Corto&#x27;,startDate:&#x27;2026-06-19&#x27;,endDate:&#x27;2026-06-19&#x27;,tag:&#x27;grabacion&#x27;,tagColor:&#x27;#ffcc00&#x27;,tagLarge:false,deliveryTime:&#x27;18:00&#x27;,state:&#x27;Pendiente&#x27;,pilar:&#x27;edicion&#x27;,driveLink:&#x27;&#x27;,notes:&#x27;&#x27;,owner:&#x27;Leo&#x27;},
+    {id:&#x27;task-003&#x27;,title:&#x27;Miniaturas de Video&#x27;,startDate:&#x27;2026-06-22&#x27;,endDate:&#x27;2026-06-22&#x27;,tag:&#x27;tarea&#x27;,tagColor:&#x27;#00e676&#x27;,tagLarge:false,state:&#x27;En proceso&#x27;,pilar:&#x27;edicion&#x27;,driveLink:&#x27;&#x27;,notes:&#x27;&#x27;,owner:&#x27;Leo&#x27;},
+    {id:&#x27;task-004&#x27;,title:&#x27;Guion Madre Patria&#x27;,startDate:&#x27;2026-06-28&#x27;,endDate:&#x27;2026-06-28&#x27;,tag:&#x27;evento&#x27;,tagColor:&#x27;#ff6b6b&#x27;,tagLarge:true,deliveryTime:&#x27;18:00&#x27;,state:&#x27;Pendiente&#x27;,pilar:&#x27;estrategia&#x27;,driveLink:&#x27;&#x27;,notes:&#x27;&#x27;,owner:&#x27;Leo&#x27;}
+  ];
+  const systemTags=[
+    {name:&#x27;evento&#x27;,color:&#x27;#ff6b6b&#x27;,createdByUser:false},
+    {name:&#x27;tarea&#x27;,color:&#x27;#00e676&#x27;,createdByUser:false},
+    {name:&#x27;reunion&#x27;,color:&#x27;#00f0ff&#x27;,createdByUser:false},
+    {name:&#x27;meet/zoom&#x27;,color:&#x27;#b066ff&#x27;,createdByUser:false},
+    {name:&#x27;grabacion&#x27;,color:&#x27;#ffcc00&#x27;,createdByUser:false}
+  ];
+  const seedTags=[...systemTags];
+  let tasks=loadJSON(STORAGE_TASKS,seedTasks); let defaultTags=loadJSON(STORAGE_TAGS,seedTags);
+  function loadJSON(k,f){try{return JSON.parse(localStorage.getItem(k))||f}catch(e){return f}}
+  function saveAll(){localStorage.setItem(STORAGE_TASKS,JSON.stringify(tasks));localStorage.setItem(STORAGE_TAGS,JSON.stringify(defaultTags))}
+  function uid(){return &#x27;task-&#x27;+Date.now().toString(36)+&#x27;-&#x27;+Math.random().toString(36).slice(2,7)}
+  function navegarA(idSeccion,elementoMenu){document.querySelectorAll(&#x27;.app-section&#x27;).forEach(sec=&gt;sec.classList.remove(&#x27;active&#x27;));document.querySelectorAll(&#x27;.menu-item&#x27;).forEach(item=&gt;item.classList.remove(&#x27;active&#x27;));document.getElementById(idSeccion).classList.add(&#x27;active&#x27;);elementoMenu.classList.add(&#x27;active&#x27;)}
+  function isoToUTC(iso){
+    const [y,m,d]=(iso||HOY_ISO).split(&#x27;-&#x27;).map(Number);
+    return Date.UTC(y,m-1,d);
+  }
+  function dateDiffDays(dueIso,baseIso){
+    return Math.round((isoToUTC(dueIso)-isoToUTC(baseIso))/86400000);
+  }
+  function statusForTask(t){
+    if((t.state||&#x27;&#x27;).trim()===&#x27;Completado&#x27;) return &#x27;completed&#x27;;
+    const due=(t.endDate||t.startDate||HOY_ISO).trim();
+
+    // Orden obligatorio del semáforo:
+    // 1) Vencido  2) Hoy  3) Próximo 1-3 días  4) En plan
+    // Se compara primero la igualdad exacta para que 2026-06-19 SIEMPRE sea amarillo.
+    if(due === HOY_ISO) return &#x27;today&#x27;;
+
+    const diff=dateDiffDays(due,HOY_ISO);
+    if(diff &lt; 0) return &#x27;overdue&#x27;;
+    if(diff &gt;= 1 &amp;&amp; diff &lt;= 3) return &#x27;due-soon&#x27;;
+    return &#x27;on-track&#x27;;
+  }
+  function statusColor(status){return ({overdue:&#x27;#ff3366&#x27;,today:&#x27;#ffcc00&#x27;,&#x27;due-soon&#x27;:&#x27;#00f0ff&#x27;,&#x27;on-track&#x27;:&#x27;#00e676&#x27;,completed:&#x27;#8a99ad&#x27;})[status]||&#x27;#00f0ff&#x27;}
+  function taskRenderDate(t){return t.endDate||t.startDate||HOY_ISO}
+  function monthOfIso(iso){return new Date(iso+&#x27;T00:00:00&#x27;).getMonth()} function yearOfIso(iso){return new Date(iso+&#x27;T00:00:00&#x27;).getFullYear()} function dayOfIso(iso){return new Date(iso+&#x27;T00:00:00&#x27;).getDate()}
+  function getVisibleTasks(){return tasks.filter(t=&gt;statusFilter===&#x27;all&#x27;||statusForTask(t)===statusFilter)}
+
+  function loadPeruHolidaysLocal(){
+    try{
+      const raw=localStorage.getItem(STORAGE_HOLIDAYS_PE);
+      if(raw){const parsed=JSON.parse(raw); if(Array.isArray(parsed)&amp;&amp;parsed.length) return parsed;}
+    }catch(e){}
+    return PERU_HOLIDAYS_2026_FALLBACK;
+  }
+  async function actualizarFeriadosPeruOnline(){
+    try{
+      const res=await fetch(&#x27;https://date.nager.at/api/v3/PublicHolidays/2026/PE&#x27;,{cache:&#x27;force-cache&#x27;});
+      if(!res.ok) throw new Error(&#x27;No se pudo consultar feriados PE&#x27;);
+      const data=await res.json();
+      const normalized=(data||[]).map(h=&gt;({date:h.date,localName:h.localName||h.name||&#x27;Feriado&#x27;})).filter(h=&gt;h.date&amp;&amp;h.date.startsWith(&#x27;2026-&#x27;));
+      if(normalized.length){
+        const map=new Map(PERU_HOLIDAYS_2026_FALLBACK.map(h=&gt;[h.date,h]));
+        normalized.forEach(h=&gt;map.set(h.date,h));
+        peruHolidays=[...map.values()].sort((a,b)=&gt;a.date.localeCompare(b.date));
+        localStorage.setItem(STORAGE_HOLIDAYS_PE,JSON.stringify(peruHolidays));
+        renderCalendarioMensualCompleto();
+      }
+    }catch(err){
+      peruHolidays=PERU_HOLIDAYS_2026_FALLBACK;
+    }
+  }
+  function holidayForDate(iso){return (peruHolidays||[]).find(h=&gt;h.date===iso)||null}
+
+  function renderCalendarioMensualCompleto(){normalizarEtiquetas();migrarHoras();const zona=document.getElementById(&#x27;calendar-render-zone&#x27;);const title=document.getElementById(&#x27;calendar-title&#x27;);if(title)title.textContent=titleForView();if(calendarView===&#x27;year&#x27;)return renderYear(zona);if(calendarView===&#x27;week&#x27;)return renderWeek(zona);if(calendarView===&#x27;day&#x27;)return renderDay(zona);if(calendarView===&#x27;hour&#x27;)return renderHour(zona);return renderMonth(zona)}
+  function activeBaseDate(){
+    const day=(anioActual===2026&amp;&amp;mesActual===5)?19:1;
+    return new Date(anioActual,mesActual,day);
+  }
+  function titleForView(){
+    const base=activeBaseDate();
+    const titleMonth=`${mesesAgenda[mesActual]} ${anioActual}`;
+    if(calendarView===&#x27;year&#x27;)return `Año ${anioActual}`;
+    if(calendarView===&#x27;week&#x27;){const range=weekRangeLabel(base);return `Semana ${range}`;}
+    if(calendarView===&#x27;day&#x27;)return `Día ${String(base.getDate()).padStart(2,&#x27;0&#x27;)} ${mesesAgenda[mesActual]} ${anioActual}`;
+    if(calendarView===&#x27;hour&#x27;)return `Agenda por hora · ${String(base.getDate()).padStart(2,&#x27;0&#x27;)} ${mesesAgenda[mesActual]} ${anioActual}`;
+    return titleMonth;
+  }
+  function weekRangeLabel(base){
+    const start=new Date(base); start.setDate(base.getDate()-base.getDay());
+    const end=new Date(start); end.setDate(start.getDate()+6);
+    return `del ${start.getDate()} al ${end.getDate()} ${mesesAgenda[end.getMonth()]} ${end.getFullYear()}`;
+  }
+  function isoFromDateObj(d){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,&#x27;0&#x27;)}-${String(d.getDate()).padStart(2,&#x27;0&#x27;)}`}
+  function cambiarMesAgenda(delta){mesActual+=delta;if(mesActual&lt;0){mesActual=11;anioActual--}if(mesActual&gt;11){mesActual=0;anioActual++}renderCalendarioMensualCompleto()}
+  function irMesActualAgenda(){anioActual=2026;mesActual=5;renderCalendarioMensualCompleto()}
+  function renderMonth(zona){let html=&#x27;&lt;div class=&quot;month-grid&quot;&gt;&#x27;;[&#x27;Dom&#x27;,&#x27;Lun&#x27;,&#x27;Mar&#x27;,&#x27;Mié&#x27;,&#x27;Jue&#x27;,&#x27;Vie&#x27;,&#x27;Sáb&#x27;].forEach(d=&gt;html+=`&lt;div class=&quot;day-name&quot;&gt;${d}&lt;/div&gt;`);const primerDiaSemana=new Date(anioActual,mesActual,1).getDay();const totalDiasMes=new Date(anioActual,mesActual+1,0).getDate();for(let i=0;i&lt;primerDiaSemana;i++)html+=&#x27;&lt;div class=&quot;day-cell empty&quot;&gt;&lt;/div&gt;&#x27;;for(let dia=1;dia&lt;=totalDiasMes;dia++){const iso=`${anioActual}-${String(mesActual+1).padStart(2,&#x27;0&#x27;)}-${String(dia).padStart(2,&#x27;0&#x27;)}`;html+=dayCellHTML(iso,dia,getVisibleTasks().filter(t=&gt;taskRenderDate(t)===iso));}zona.innerHTML=html+&#x27;&lt;/div&gt;&#x27;;renderTagHelpers();}
+  function dayCellHTML(iso,label,items){const esHoy=iso===HOY_ISO?&#x27;today&#x27;:&#x27;&#x27;;const holiday=holidayForDate(iso);const holidayClass=holiday?&#x27;holiday&#x27;:&#x27;&#x27;;const holidayAttrs=holiday?`data-holiday=&quot;true&quot; data-holiday-name=&quot;${escapeAttr(holiday.localName)}&quot;`:&#x27;&#x27;;let html=`&lt;div class=&quot;day-cell ${esHoy} ${holidayClass}&quot; data-date=&quot;${iso}&quot; data-month=&quot;${monthOfIso(iso)}&quot; data-year=&quot;${yearOfIso(iso)}&quot; data-view-mode=&quot;${viewMode}&quot; ${holidayAttrs}&gt;&lt;div class=&quot;cell-number&quot;&gt;&lt;span&gt;${label}&lt;/span&gt;&lt;button class=&quot;add-task-day&quot; onclick=&quot;crearTareaEnDia(&#x27;${iso}&#x27;)&quot;&gt;+&lt;/button&gt;&lt;/div&gt;`;if(holiday)html+=`&lt;div class=&quot;holiday-badge&quot; title=&quot;Feriado Perú: ${escapeAttr(holiday.localName)}&quot;&gt;${escapeHTML(holiday.localName)}&lt;/div&gt;`;html+=`&lt;div class=&quot;task-stack&quot;&gt;`;items.forEach(t=&gt;html+=taskHTML(t));html+=&#x27;&lt;/div&gt;&lt;/div&gt;&#x27;;return html;}
+  function renderWeek(zona){const base=activeBaseDate();const start=new Date(base);start.setDate(base.getDate()-base.getDay());let html=&#x27;&lt;div class=&quot;week-grid&quot;&gt;&#x27;;for(let i=0;i&lt;7;i++){const d=new Date(start);d.setDate(start.getDate()+i);const iso=isoFromDateObj(d);html+=dayCellHTML(iso,`${[&#x27;Dom&#x27;,&#x27;Lun&#x27;,&#x27;Mar&#x27;,&#x27;Mié&#x27;,&#x27;Jue&#x27;,&#x27;Vie&#x27;,&#x27;Sáb&#x27;][d.getDay()]} ${d.getDate()}`,getVisibleTasks().filter(t=&gt;taskRenderDate(t)===iso));}zona.innerHTML=html+&#x27;&lt;/div&gt;&#x27;;renderTagHelpers();}
+  function renderDay(zona){const iso=isoFromDateObj(activeBaseDate());zona.innerHTML=&#x27;&lt;div class=&quot;day-grid&quot;&gt;&#x27;+dayCellHTML(iso,`${String(activeBaseDate().getDate()).padStart(2,&#x27;0&#x27;)} ${mesesAgenda[mesActual]}`,getVisibleTasks().filter(t=&gt;taskRenderDate(t)===iso))+&#x27;&lt;/div&gt;&#x27;;renderTagHelpers();}
+  function renderHour(zona){const baseIso=isoFromDateObj(activeBaseDate());const dayTasks=getVisibleTasks().filter(t=&gt;taskRenderDate(t)===baseIso).sort((a,b)=&gt;(a.deliveryTime||&#x27;23:59&#x27;).localeCompare(b.deliveryTime||&#x27;23:59&#x27;));let html=&#x27;&lt;div class=&quot;hour-grid&quot;&gt;&#x27;;for(let h=6;h&lt;=23;h++){const hour=String(h).padStart(2,&#x27;0&#x27;)+&#x27;:00&#x27;;const items=dayTasks.filter(t=&gt;(t.deliveryTime||&#x27;18:00&#x27;).slice(0,2)===String(h).padStart(2,&#x27;0&#x27;));html+=`&lt;div class=&quot;hour-row&quot;&gt;&lt;div class=&quot;hour-label&quot;&gt;${hour}&lt;/div&gt;&lt;div class=&quot;hour-slot&quot;&gt;`;if(items.length){items.forEach(t=&gt;html+=taskHTML(t));}else{html+=&#x27;&lt;div class=&quot;view-empty&quot;&gt;Sin tareas&lt;/div&gt;&#x27;}html+=&#x27;&lt;/div&gt;&lt;/div&gt;&#x27;}zona.innerHTML=html+&#x27;&lt;/div&gt;&#x27;;renderTagHelpers();}
+  function renderYear(zona){let html=&#x27;&lt;div class=&quot;year-grid&quot;&gt;&#x27;;for(let m=0;m&lt;12;m++){const items=getVisibleTasks().filter(t=&gt;yearOfIso(taskRenderDate(t))===anioActual&amp;&amp;monthOfIso(taskRenderDate(t))===m).sort((a,b)=&gt;taskRenderDate(a).localeCompare(taskRenderDate(b))).slice(0,5);html+=`&lt;div class=&quot;year-month-card&quot;&gt;&lt;h4&gt;${mesesAgenda[m]}&lt;/h4&gt;`;if(!items.length)html+=&#x27;&lt;div class=&quot;view-empty&quot;&gt;Sin tareas&lt;/div&gt;&#x27;;items.forEach(t=&gt;{const st=statusForTask(t);html+=`&lt;div class=&quot;year-task-line&quot; style=&quot;--task-color:${statusColor(st)}&quot; onclick=&quot;abrirEditor(&#x27;${t.id}&#x27;)&quot;&gt;${formatShort(t.endDate)} · ${escapeHTML(t.title)}&lt;/div&gt;`});html+=&#x27;&lt;/div&gt;&#x27;}zona.innerHTML=html+&#x27;&lt;/div&gt;&#x27;;renderTagHelpers();}
+  function taskHTML(t){const status=statusForTask(t);const taskColor=statusColor(status);const color=t.tagColor||&#x27;#00f0ff&#x27;;const large=t.tagLarge?&#x27;data-tag-large=&quot;true&quot;&#x27;:&#x27;&#x27;;const title=t.title||&#x27;&#x27;;const delivery=t.deliveryTime||&#x27;18:00&#x27;;const advanced=`&lt;div class=&quot;advanced-task-details&quot;&gt;&lt;span class=&quot;advanced-mini-chip&quot;&gt;${escapeHTML(t.state||&#x27;Pendiente&#x27;)}&lt;/span&gt;&lt;span class=&quot;advanced-mini-chip&quot;&gt;Pilar: ${escapeHTML(t.pilar||&#x27;contenido&#x27;)}&lt;/span&gt;${t.driveLink?&#x27;&lt;span class=&quot;advanced-mini-chip&quot;&gt;Drive vinculado&lt;/span&gt;&#x27;:&#x27;&#x27;}&lt;/div&gt;`;return `&lt;div class=&quot;notion-block&quot; tabindex=&quot;0&quot; style=&quot;--task-color:${taskColor};--tag-color:${color}&quot; data-task-id=&quot;${t.id}&quot; data-status=&quot;${status}&quot; data-state=&quot;${t.state||&#x27;Pendiente&#x27;}&quot; data-start-date=&quot;${t.startDate}&quot; data-end-date=&quot;${t.endDate}&quot; data-due-time=&quot;${delivery}&quot; data-tag=&quot;${escapeAttr(t.tag||&#x27;&#x27;)}&quot; data-tag-color=&quot;${color}&quot; data-pilar=&quot;${t.pilar||&#x27;&#x27;}&quot; data-drive-link=&quot;${escapeAttr(t.driveLink||&#x27;&#x27;)}&quot; data-notes=&quot;${escapeAttr(t.notes||&#x27;&#x27;)}&quot; data-view-mode=&quot;${viewMode}&quot; ${large} onclick=&quot;abrirEditor(&#x27;${t.id}&#x27;)&quot;&gt;&lt;div class=&quot;task-title&quot; contenteditable=&quot;true&quot; spellcheck=&quot;false&quot; oninput=&quot;editarTituloInline(event,&#x27;${t.id}&#x27;)&quot; onclick=&quot;event.stopPropagation(); abrirEditor(&#x27;${t.id}&#x27;)&quot;&gt;${escapeHTML(title)}&lt;/div&gt;&lt;button class=&quot;task-menu-btn&quot; onclick=&quot;event.stopPropagation(); abrirEditor(&#x27;${t.id}&#x27;)&quot;&gt;⋯&lt;/button&gt;&lt;div class=&quot;task-meta-line&quot;&gt;&lt;span class=&quot;status-dot&quot;&gt;&lt;/span&gt;&lt;span class=&quot;tag-chip&quot; style=&quot;--tag-color:${color};${t.tagLarge?&#x27;font-size:.7rem;padding:3px 9px;&#x27;:&#x27;&#x27;}&quot;&gt;${escapeHTML(t.tag||&#x27;Etiqueta&#x27;)}&lt;/span&gt;&lt;span class=&quot;date-chip&quot; data-due-date=&quot;${t.endDate}&quot; data-time-status=&quot;${status}&quot; title=&quot;${t.endDate} · ${labelStatus(status)}&quot;&gt;🏁 ${formatShort(t.endDate)} · ${labelStatus(status)}&lt;/span&gt;&lt;span class=&quot;time-chip&quot; title=&quot;Hora de entrega ${delivery}&quot;&gt;⏰ ${delivery} · ${timeRemainingLabel(t)}&lt;/span&gt;&lt;/div&gt;${advanced}&lt;/div&gt;`}
+  function labelStatus(status){return ({overdue:&#x27;Vencido&#x27;,today:&#x27;Entrega hoy&#x27;,&#x27;due-soon&#x27;:&#x27;Próximo&#x27;,&#x27;on-track&#x27;:&#x27;En plan&#x27;,completed:&#x27;Completada&#x27;})[status]||status}
+  function dueDateTime(t){return new Date(`${t.endDate||t.startDate||HOY_ISO}T${t.deliveryTime||&#x27;18:00&#x27;}:00`)}
+  function timeRemainingLabel(t){const now=new Date(BASE_NOW);const due=dueDateTime(t);const ms=due-now;if((t.state||&#x27;&#x27;)===&#x27;Completado&#x27;)return &#x27;Completada&#x27;;if(ms&lt;0)return &#x27;Hora vencida&#x27;;const mins=Math.floor(ms/60000);const days=Math.floor(mins/1440);const hrs=Math.floor((mins%1440)/60);const rem=mins%60;if(days&gt;0)return `Faltan ${days}d ${hrs}h`;if(hrs&gt;0)return `Faltan ${hrs}h ${rem}m`;if(mins&gt;0)return `Faltan ${mins}m`;return &#x27;Entrega ahora&#x27;}
+  function migrarHoras(){let changed=false;tasks.forEach(t=&gt;{if(!t.deliveryTime){t.deliveryTime=&#x27;18:00&#x27;;changed=true}});if(changed)saveAll()}
+  function escapeHTML(s){return String(s).replace(/[&amp;&lt;&gt;&quot;]/g,m=&gt;({&#x27;&amp;&#x27;:&#x27;&amp;amp;&#x27;,&#x27;&lt;&#x27;:&#x27;&amp;lt;&#x27;,&#x27;&gt;&#x27;:&#x27;&amp;gt;&#x27;,&#x27;&quot;&#x27;:&#x27;&amp;quot;&#x27;}[m]))} function escapeAttr(s){return escapeHTML(s).replace(/&#x27;/g,&#x27;&amp;#39;&#x27;)} function formatShort(iso){if(!iso)return &#x27;sin fin&#x27;;const d=new Date(iso+&#x27;T00:00:00&#x27;);return `${String(d.getDate()).padStart(2,&#x27;0&#x27;)}/${String(d.getMonth()+1).padStart(2,&#x27;0&#x27;)}`}
+  function editarTituloInline(ev,id){const t=tasks.find(x=&gt;x.id===id);if(!t)return;t.title=ev.currentTarget.innerText.trim(); if(activeTaskId===id)document.getElementById(&#x27;edit-title&#x27;).value=t.title; saveAll()}
+  function abrirEditor(id){activeTaskId=id;const t=tasks.find(x=&gt;x.id===id);if(!t)return;document.getElementById(&#x27;editor-panel&#x27;).classList.add(&#x27;active&#x27;);document.getElementById(&#x27;edit-title&#x27;).value=t.title||&#x27;&#x27;;document.getElementById(&#x27;edit-start-date&#x27;).value=t.startDate||HOY_ISO;document.getElementById(&#x27;edit-end-date&#x27;).value=t.endDate||t.startDate||HOY_ISO;document.getElementById(&#x27;edit-delivery-time&#x27;).value=t.deliveryTime||&#x27;18:00&#x27;;document.getElementById(&#x27;edit-tag&#x27;).value=t.tag||&#x27;&#x27;;document.getElementById(&#x27;edit-tag-color&#x27;).value=t.tagColor||&#x27;#00f0ff&#x27;;document.getElementById(&#x27;edit-tag-large&#x27;).checked=!!t.tagLarge;document.getElementById(&#x27;edit-state&#x27;).value=t.state||&#x27;Pendiente&#x27;;document.getElementById(&#x27;edit-pilar&#x27;).value=t.pilar||&#x27;contenido&#x27;;document.getElementById(&#x27;edit-drive-link&#x27;).value=t.driveLink||&#x27;&#x27;;document.getElementById(&#x27;edit-notes&#x27;).value=t.notes||&#x27;&#x27;;document.getElementById(&#x27;saved-hint&#x27;).classList.remove(&#x27;active&#x27;);renderTagHelpers()}
+  function cerrarEditor(){document.getElementById(&#x27;editor-panel&#x27;).classList.remove(&#x27;active&#x27;);activeTaskId=null}
+  function syncEditorToTask(rerender=false){const t=tasks.find(x=&gt;x.id===activeTaskId);if(!t)return;t.title=document.getElementById(&#x27;edit-title&#x27;).value;t.startDate=document.getElementById(&#x27;edit-start-date&#x27;).value;t.endDate=document.getElementById(&#x27;edit-end-date&#x27;).value;t.deliveryTime=document.getElementById(&#x27;edit-delivery-time&#x27;).value||&#x27;18:00&#x27;;t.tag=document.getElementById(&#x27;edit-tag&#x27;).value;t.tagColor=document.getElementById(&#x27;edit-tag-color&#x27;).value;t.tagLarge=document.getElementById(&#x27;edit-tag-large&#x27;).checked;t.state=document.getElementById(&#x27;edit-state&#x27;).value;t.pilar=document.getElementById(&#x27;edit-pilar&#x27;).value;t.driveLink=document.getElementById(&#x27;edit-drive-link&#x27;).value;t.notes=document.getElementById(&#x27;edit-notes&#x27;).value;saveAll();renderCalendarioMensualCompleto();if(rerender)abrirEditor(t.id)}
+  function tagKey(name){return String(name||&#x27;&#x27;).trim().toLowerCase()}
+  function normalizarEtiquetas(){
+    const fixedMap=new Map(systemTags.map(t=&gt;[tagKey(t.name),t]));
+    const merged=[];
+    const seen=new Set();
+
+    // 1) Siempre mantener estas etiquetas fijas del sistema.
+    systemTags.forEach(t=&gt;{merged.push({...t,createdByUser:false});seen.add(tagKey(t.name));});
+
+    // 2) Migrar etiquetas guardadas en localStorage.
+    //    CHB/chb se elimina. Las que no son fijas pasan a ser creadas por el usuario.
+    (defaultTags||[]).forEach(t=&gt;{
+      const name=String(t.name||&#x27;&#x27;).trim();
+      const key=tagKey(name);
+      if(!name || key===&#x27;chb&#x27;) return;
+      if(fixedMap.has(key)) return;
+      if(seen.has(key)) return;
+      merged.push({name,color:t.color||&#x27;#00f0ff&#x27;,createdByUser:true});
+      seen.add(key);
+    });
+
+    defaultTags=merged;
+
+    // 3) Corregir tareas que tuvieran etiqueta CHB/chb.
+    tasks=(tasks||[]).map(t=&gt;{
+      if(tagKey(t.tag)===&#x27;chb&#x27;) return {...t,tag:&#x27;tarea&#x27;,tagColor:&#x27;#00e676&#x27;};
+      return t;
+    });
+
+    saveAll();
+  }
+  function renderTagHelpers(){normalizarEtiquetas();const dl=document.getElementById(&#x27;default-tags-list&#x27;);const qt=document.getElementById(&#x27;quick-tags&#x27;);if(!dl||!qt)return;dl.innerHTML=defaultTags.map(t=&gt;`&lt;option value=&quot;${escapeAttr(t.name)}&quot;&gt;&lt;/option&gt;`).join(&#x27;&#x27;);qt.innerHTML=defaultTags.map(t=&gt;{const canDelete=t.createdByUser===true;return `&lt;span class=&quot;quick-tag-wrap&quot; style=&quot;--qt-color:${t.color}&quot; data-tag-name=&quot;${escapeAttr(t.name)}&quot; data-tag-color=&quot;${t.color}&quot; data-user-created=&quot;${canDelete}&quot; oncontextmenu=&quot;abrirMenuContextualEtiqueta(event)&quot;&gt;&lt;button class=&quot;quick-tag&quot; type=&quot;button&quot; onclick=&quot;aplicarEtiquetaRapida(&#x27;${escapeAttr(t.name)}&#x27;,&#x27;${t.color}&#x27;)&quot;&gt;${escapeHTML(t.name)}&lt;/button&gt;&lt;/span&gt;`}).join(&#x27;&#x27;)}
+  let contextTagName=null;
+  let contextTagColor=null;
+  let contextTagUserCreated=false;
+
+  function abrirMenuContextualEtiqueta(event){
+    event.preventDefault();
+    event.stopPropagation();
+    const wrap=event.currentTarget.closest(&#x27;.quick-tag-wrap&#x27;);
+    if(!wrap)return;
+    contextTagName=wrap.dataset.tagName||&#x27;&#x27;;
+    contextTagColor=wrap.dataset.tagColor||&#x27;#00f0ff&#x27;;
+    contextTagUserCreated=wrap.dataset.userCreated===&#x27;true&#x27;;
+    const menu=document.getElementById(&#x27;tag-context-menu&#x27;);
+    const title=document.getElementById(&#x27;tag-context-title&#x27;);
+    const del=document.getElementById(&#x27;tag-context-delete&#x27;);
+    title.textContent=`🏷️ ${contextTagName}`;
+    del.classList.toggle(&#x27;disabled&#x27;,!contextTagUserCreated);
+    del.textContent=contextTagUserCreated?&#x27;🗑️ Eliminar etiqueta&#x27;:&#x27;🔒 Etiqueta del sistema&#x27;;
+    menu.style.left=Math.min(event.clientX,window.innerWidth-250)+&#x27;px&#x27;;
+    menu.style.top=Math.min(event.clientY,window.innerHeight-150)+&#x27;px&#x27;;
+    menu.classList.add(&#x27;active&#x27;);
+    menu.setAttribute(&#x27;aria-hidden&#x27;,&#x27;false&#x27;);
+  }
+  function cerrarMenuContextualEtiqueta(){const menu=document.getElementById(&#x27;tag-context-menu&#x27;);if(menu){menu.classList.remove(&#x27;active&#x27;);menu.setAttribute(&#x27;aria-hidden&#x27;,&#x27;true&#x27;)}}
+  function aplicarEtiquetaDesdeContextMenu(){if(contextTagName)aplicarEtiquetaRapida(contextTagName,contextTagColor);cerrarMenuContextualEtiqueta()}
+  function eliminarEtiquetaDesdeContextMenu(){if(!contextTagName)return;if(!contextTagUserCreated){alert(&#x27;Esta etiqueta pertenece al sistema y no puede eliminarse.&#x27;);cerrarMenuContextualEtiqueta();return;}const name=contextTagName;cerrarMenuContextualEtiqueta();eliminarEtiquetaPredeterminada(name)}
+
+  function aplicarEtiquetaRapida(name,color){document.getElementById(&#x27;edit-tag&#x27;).value=name;document.getElementById(&#x27;edit-tag-color&#x27;).value=color;syncEditorToTask()}
+  function guardarEtiquetaPredeterminada(){const name=document.getElementById(&#x27;edit-tag&#x27;).value.trim();const color=document.getElementById(&#x27;edit-tag-color&#x27;).value;if(!name)return;normalizarEtiquetas();const exists=defaultTags.find(t=&gt;tagKey(t.name)===tagKey(name));if(exists){exists.color=color}else{defaultTags.push({name,color,createdByUser:true})}saveAll();renderTagHelpers();document.getElementById(&#x27;saved-hint&#x27;).classList.add(&#x27;active&#x27;)}
+  function eliminarEtiquetaPredeterminada(name){normalizarEtiquetas();const tag=defaultTags.find(t=&gt;tagKey(t.name)===tagKey(name));if(!tag)return;if(!tag.createdByUser){alert(&#x27;Esta etiqueta pertenece al sistema y no puede eliminarse.&#x27;);return}const usado=tasks.some(t=&gt;(t.tag||&#x27;&#x27;).toLowerCase()===tag.name.toLowerCase());const msg=usado?`¿Eliminar la etiqueta &quot;${tag.name}&quot;?
+
+Se quitará de la biblioteca de etiquetas. Las tareas que ya la usan conservarán su texto y color actual.`:`¿Eliminar la etiqueta &quot;${tag.name}&quot;?`;if(!confirm(msg))return;defaultTags=defaultTags.filter(t=&gt;tagKey(t.name)!==tagKey(tag.name));saveAll();renderTagHelpers()}
+  function crearTareaEnDia(iso){const first=defaultTags[0]||{name:&#x27;NUEVA&#x27;,color:&#x27;#00f0ff&#x27;};const t={id:uid(),title:&#x27;Nueva tarea&#x27;,startDate:iso,endDate:iso,tag:first.name,tagColor:first.color,tagLarge:false,deliveryTime:&#x27;18:00&#x27;,state:&#x27;Pendiente&#x27;,pilar:&#x27;contenido&#x27;,driveLink:&#x27;&#x27;,notes:&#x27;&#x27;,owner:&#x27;Leo&#x27;};tasks.push(t);saveAll();renderCalendarioMensualCompleto();abrirEditor(t.id)}
+  function crearTareaEnHoy(){crearTareaEnDia(HOY_ISO)}
+  function duplicarTareaActiva(){const t=tasks.find(x=&gt;x.id===activeTaskId);if(!t)return;const copy={...t,id:uid(),title:t.title+&#x27; copia&#x27;};tasks.push(copy);saveAll();renderCalendarioMensualCompleto();abrirEditor(copy.id)}
+  function eliminarTareaActiva(){if(!activeTaskId)return;tasks=tasks.filter(t=&gt;t.id!==activeTaskId);saveAll();cerrarEditor();renderCalendarioMensualCompleto()}
+  function setCalendarView(view,btn){calendarView=view;document.querySelectorAll(&#x27;.cal-view-btn&#x27;).forEach(b=&gt;b.classList.remove(&#x27;active&#x27;));if(btn)btn.classList.add(&#x27;active&#x27;);renderCalendarioMensualCompleto()}
+  function setStatusFilter(filter,el){statusFilter=filter;document.querySelectorAll(&#x27;.legend-pill&#x27;).forEach(p=&gt;p.classList.remove(&#x27;active-filter&#x27;));if(el)el.classList.add(&#x27;active-filter&#x27;);renderCalendarioMensualCompleto()}
+  function setViewMode(mode,btn){viewMode=mode;document.querySelectorAll(&#x27;.view-btn&#x27;).forEach(b=&gt;b.classList.remove(&#x27;active&#x27;));btn.classList.add(&#x27;active&#x27;);renderCalendarioMensualCompleto()}
+  function hexToRgb(hex){return `${parseInt(hex.slice(1,3),16)}, ${parseInt(hex.slice(3,5),16)}, ${parseInt(hex.slice(5,7),16)}`} function oscurecerColor(hex,f){let r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);return `rgb(${Math.max(0,Math.floor(r*f))},${Math.max(0,Math.floor(g*f))},${Math.max(0,Math.floor(b*f))})`}
+  function actualizarFondoManual(){const c1=document.getElementById(&#x27;picker-color-fondo-1&#x27;).value,c2=document.getElementById(&#x27;picker-color-fondo-2&#x27;).value,raw=document.getElementById(&#x27;select-direccion-fondo&#x27;).value.split(&#x27;|&#x27;),tipo=raw[0],dir=raw[1],root=document.documentElement;root.style.setProperty(&#x27;--bg-color-1&#x27;,c1);root.style.setProperty(&#x27;--bg-color-2&#x27;,c2);document.body.style.background=`${tipo}(${dir}, ${c1}, ${c2})`;document.body.style.backgroundAttachment=&#x27;fixed&#x27;;root.style.setProperty(&#x27;--sidebar-color-1&#x27;,oscurecerColor(c1,.3));root.style.setProperty(&#x27;--sidebar-color-2&#x27;,oscurecerColor(c2,.3))}
+  function actualizarBotonesGlassManual(){const hex=document.getElementById(&#x27;picker-color-glass&#x27;).value,op=document.getElementById(&#x27;slider-opacity-glass&#x27;).value,blur=document.getElementById(&#x27;slider-blur-glass&#x27;).value,glow=100,rgb=hexToRgb(hex),root=document.documentElement;document.getElementById(&#x27;lbl-opacity-glass&#x27;).innerText=`Intensidad: ${op}%`;document.getElementById(&#x27;lbl-blur-glass&#x27;).innerText=`Blur: ${blur}px`;root.style.setProperty(&#x27;--btn-glass-color-rgb&#x27;,rgb);root.style.setProperty(&#x27;--btn-glass-opacity&#x27;,op/100);root.style.setProperty(&#x27;--btn-glass-blur&#x27;,`${blur}px`);root.style.setProperty(&#x27;--btn-glass-glow-filter&#x27;,`drop-shadow(0 0 12px rgba(${rgb}, ${glow/100}))`)}
+  document.addEventListener(&#x27;click&#x27;,cerrarMenuContextualEtiqueta);document.addEventListener(&#x27;scroll&#x27;,cerrarMenuContextualEtiqueta,true);document.addEventListener(&#x27;keydown&#x27;,e=&gt;{if(e.key===&#x27;Escape&#x27;)cerrarMenuContextualEtiqueta()});
+  document.addEventListener(&#x27;DOMContentLoaded&#x27;,()=&gt;{migrarHoras();renderCalendarioMensualCompleto();actualizarFondoManual();actualizarBotonesGlassManual();actualizarFeriadosPeruOnline()});
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;" style="width:100%; height:920px; border:0; display:block; background:transparent;" title="Agenda Personal Luminar"></iframe>
 </div>
 </section>
-
 <section class="app-section" id="sec-plan">
 <div class="context-bar">
 <div class="field"><label>Cliente</label><div class="client-select-row"><select class="select" id="ctx-client" onchange="syncContext()"></select><button class="btn client-add-btn" onclick="addClient()" title="Añadir cliente">＋</button></div></div>
@@ -630,7 +775,6 @@ function captureLuminarState(){
     activeScriptId: typeof activeScriptId !== "undefined" ? activeScriptId : null,
     activeNoteId: typeof activeNoteId !== "undefined" ? activeNoteId : null,
     profileName: localStorage.getItem("luminarProfileName") || "Leo",
-    profileGender: localStorage.getItem("luminarProfileGender") || "masculino",
     profilePhoto: localStorage.getItem("luminarPhoto") || "",
     theme: localStorage.getItem("luminarThemeLive") || "",
     visualColors: localStorage.getItem("luminarVisualColors") || ""
@@ -649,7 +793,6 @@ function applyLuminarState(state){
     if(state.activeScriptId) activeScriptId = state.activeScriptId;
     if(state.activeNoteId) activeNoteId = state.activeNoteId;
     if(state.profileName) localStorage.setItem("luminarProfileName", state.profileName);
-    if(state.profileGender) localStorage.setItem("luminarProfileGender", state.profileGender);
     if(state.profilePhoto) localStorage.setItem("luminarPhoto", state.profilePhoto);
     if(state.theme) localStorage.setItem("luminarThemeLive", state.theme);
     if(state.visualColors) localStorage.setItem("luminarVisualColors", state.visualColors);
@@ -800,7 +943,6 @@ let agendaTasks=[
 ];
 let notes=[{id:"N-001",title:"Ideas rápidas de contenido",tag:"Ideas",body:"- Hooks para reels\n- Ideas para carruseles\n- Casos de éxito para clientes"}];
 let activeScriptId="SCR-001",activeNoteId="N-001",filterAgenda="all";
-let agendaContext={month:context.month,year:context.year};
 
 function toggleSidebar(){document.body.classList.toggle("sidebar-collapsed");localStorage.setItem("luminarSidebar",document.body.classList.contains("sidebar-collapsed")?"yes":"no")}
 function setMode(mode){document.body.classList.toggle("mode-advanced",mode==="advanced");document.body.classList.toggle("mode-macro",mode==="macro");document.getElementById("btn-macro").classList.toggle("active",mode==="macro");document.getElementById("btn-advanced").classList.toggle("active",mode==="advanced")}
@@ -838,7 +980,7 @@ function addClientRecord(name){
   if(existing){existing.active=true;saveClients();return existing.name}
   clients.push({name,active:true});saveClients();return name;
 }
-function addClientFromPanel(){const input=document.getElementById("new-client-name");const name=addClientRecord(input.value);if(!name)return;input.value="";context.client=name;initContextSelectors();renderClientsPanel();renderAll()}
+function addClientFromPanel(){const input=document.getElementById("new-client-name");const name=addClientRecord(input.value);if(!name)return;input.value="";context.client=name;initContextSelectors();renderClientsPanel();renderAll();if(typeof queueContentPlanCloudSync==="function") queueContentPlanCloudSync();}
 function toggleClientActive(name){
   const c=clients.find(x=>x.name===name); if(!c)return; c.active=!c.active; saveClients(); ensureActiveContextClient(); initContextSelectors(); renderClientsPanel(); renderAll();
 }
@@ -908,9 +1050,9 @@ function renderContentPlan(){const tbody=document.getElementById("content-tbody"
 <td class="script-cell"><div class="script-container"><div class="script-toggle"><button class="${(i.scriptMode||'app')==='app'?'active':''}" onclick="setScriptMode('${i.id}','app')">App</button><button class="${(i.scriptMode||'app')==='drive'?'active':''}" onclick="setScriptMode('${i.id}','drive')">Drive</button></div><button class="btn script-open" onclick="openActiveScriptTarget('${i.id}')">${(i.scriptMode||'app')==='drive'?(i.refs?'Abrir Drive':'Pegar Drive'):(script?script.status:'Crear')+' · Guion'}</button></div></td>
 <td><input id="refs-${i.id}" class="cell-input" value="${i.refs||""}" oninput="updateContent('${i.id}','refs',this.value)"></td><td><button class="btn-danger" onclick="deleteContent('${i.id}')">✕</button></td>
 </tr>`}).join("");document.getElementById("ctx-count").value=currentItems().length;buildPrintPlan();}
-function updateContent(id,key,value){let it=contentItems.find(x=>x.id===id);if(!it)return;if(key==="time")value=normalizeHour(value);it[key]=value;if(key==="date"){/* calendario de plan se actualiza solo por render */}renderDashboard();buildPrintPlan();}
-function addContentItem(){const n=contentItems.length+1;const id="CNT-"+String(n).padStart(3,"0");contentItems.push({id,client:context.client,month:context.month,year:context.year,status:"Idea",date:`${context.year}-${String(monthIndex[context.month]+1).padStart(2,"0")}-01`,time:"09:00",ampm:"AM",objective:"VALOR",network:"instagram",title:"Nuevo contenido",type:"Reel",format:"Reel",category:"Historia Curiosa o Biografía",scriptId:"",scriptMode:"app",refs:"",metrics:{reach:0,views:0,likes:0,comments:0,saves:0,shares:0,profile:0,followers:0}});renderContentPlan()}
-function deleteContent(id){contentItems=contentItems.filter(i=>i.id!==id);scripts.forEach(s=>{if(s.contentId===id)s.contentId=""});renderAll()}
+function updateContent(id,key,value){let it=contentItems.find(x=>x.id===id);if(!it)return;if(key==="time")value=normalizeHour(value);it[key]=value;if(key==="date"){/* calendario de plan se actualiza solo por render */}renderDashboard();buildPrintPlan();if(typeof queueContentPlanCloudSync==="function") queueContentPlanCloudSync();}
+function addContentItem(){const n=contentItems.length+1;const id="CNT-"+String(n).padStart(3,"0");contentItems.push({id,client:context.client,month:context.month,year:context.year,status:"Idea",date:`${context.year}-${String(monthIndex[context.month]+1).padStart(2,"0")}-01`,time:"09:00",ampm:"AM",objective:"VALOR",network:"instagram",title:"Nuevo contenido",type:"Reel",format:"Reel",category:"Historia Curiosa o Biografía",scriptId:"",scriptMode:"app",refs:"",metrics:{reach:0,views:0,likes:0,comments:0,saves:0,shares:0,profile:0,followers:0}});renderContentPlan();if(typeof queueContentPlanCloudSync==="function") queueContentPlanCloudSync();}
+function deleteContent(id){contentItems=contentItems.filter(i=>i.id!==id);scripts.forEach(s=>{if(s.contentId===id)s.contentId=""});renderAll();if(typeof queueContentPlanCloudSync==="function") queueContentPlanCloudSync()}
 function adjustContentCount(v){let target=parseInt(v)||0;while(currentItems().length<target)addContentItem();while(currentItems().length>target){let last=currentItems().at(-1);deleteContent(last.id)}renderContentPlan()}
 function clearPlanFilters(){document.getElementById("plan-search").value="";document.getElementById("filter-status").value="";document.getElementById("filter-network").value="";renderContentPlan()}
 function buildPrintPlan(){const el=document.getElementById("print-plan");if(!el)return;const rows=currentItems().map((i,idx)=>`<tr><td class="p-num">${idx+1}</td><td class="p-date">${i.date}</td><td class="p-hour">${i.time} ${(i.ampm||'').split(" ")[0]}</td><td class="p-red">${redLabel(i.network)}</td><td class="p-obj">${i.objective}</td><td class="p-type">${i.type}</td><td class="p-format">${formatLabel(i.format)}</td><td class="p-title">${i.title}</td><td class="p-cat">${i.category}</td><td class="p-script">${(scripts.find(s=>s.id===i.scriptId)||{}).status||"Sin guion"}</td></tr>`).join("");el.innerHTML=`<h1>Plan de Contenido</h1><p style="font-size:12pt"><b>Cliente:</b> ${context.client} &nbsp; <b>Periodo:</b> ${context.month} ${context.year}</p><br><table class="print-table"><thead><tr><th style="width:4%">N°</th><th style="width:11%">Fecha</th><th style="width:9%">Hora</th><th style="width:8%">Red</th><th style="width:11%">Objetivo</th><th style="width:12%">Tipo de contenido</th><th style="width:10%">Formato</th><th style="width:18%">Título</th><th style="width:12%">Categoría</th><th style="width:9%">Guion</th></tr></thead><tbody>${rows}</tbody></table>`}
@@ -923,118 +1065,21 @@ function saveActiveScript(){let s=scripts.find(x=>x.id===activeScriptId);if(!s)r
 function createScriptFromScratch(){let s={id:"SCR-"+Date.now(),contentId:"",title:"Nuevo guion",client:context.client,month:context.month,year:context.year,project:"General",status:"Borrador",type:"Reel",body:""};scripts.push(s);activeScriptId=s.id;renderScripts()}
 function openLinkedContent(){let s=scripts.find(x=>x.id===activeScriptId);if(s&&s.contentId){navigate("sec-plan")}else alert("Este guion aún no está vinculado a un contenido.")}
 function renderRadar(){const tbody=document.getElementById("radar-tbody");if(!tbody)return;const list=currentItems();document.getElementById("radar-context").textContent=`${context.client} · ${context.month} ${context.year}`;document.getElementById("radar-count-info").value=`${list.length} publicaciones`;tbody.innerHTML=list.map(i=>{const score=calcScore(i);return `<tr><td>${i.title}</td><td>${i.format}</td><td>${redLabel(i.network)}</td>${["reach","views","likes","comments","saves","shares","profile","followers"].map(k=>`<td><input class="cell-input radar-num" inputmode="numeric" value="${i.metrics[k]||0}" oninput="updateMetric('${i.id}','${k}',this.value)"></td>`).join("")}<td><span class="badge-pill" style="color:${score>=75?'var(--neon-verde)':score>=55?'var(--neon-amarillo)':'var(--neon-rojo)'}">${score}/100</span></td></tr>`}).join("");document.getElementById("radar-cards").innerHTML=list.map(i=>{const score=calcScore(i);return `<div class="folder-card"><h3>${i.title}</h3><p class="muted">${i.format} · ${redLabel(i.network)}</p><h2 style="color:${score>=75?'var(--neon-verde)':score>=55?'var(--neon-amarillo)':'var(--neon-rojo)'}">${score}/100</h2><p>${score>=75?'Repetir formato':'Optimizar contenido'}</p></div>`}).join("");renderSummary()}
-function updateMetric(id,key,value){let i=contentItems.find(x=>x.id===id);if(!i)return;i.metrics[key]=Number(value.replace(/\D/g,''))||0;/* no rerender: evita perder foco */}
+function updateMetric(id,key,value){let i=contentItems.find(x=>x.id===id);if(!i)return;i.metrics[key]=Number(value.replace(/\D/g,''))||0;/* no rerender: evita perder foco */ if(typeof queueContentPlanCloudSync==="function") queueContentPlanCloudSync();}
 function calcScore(i){const m=i.metrics||{};const reach=Math.max(m.reach||0,1);const utility=Math.min(100,((m.saves||0)+(m.shares||0))/reach*100/3*100);const attraction=Math.min(100,(m.views||0)/reach*100/2);const conversation=Math.min(100,((m.comments||0)+(m.shares||0))/reach*100/2*100);const commercial=Math.min(100,((m.profile||0)+(m.followers||0))/reach*100/2*100);return Math.round(utility*.30+attraction*.25+conversation*.20+commercial*.25)}
 function renderSummary(){const list=currentItems();const scores=list.map(calcScore);const avg=Math.round(scores.reduce((a,b)=>a+b,0)/Math.max(scores.length,1));document.getElementById("summary-score").textContent=avg+"/100";document.getElementById("summary-diagnosis").textContent=avg>=75?"El plan muestra buena tracción orgánica. Prioriza repetir formatos con alto valor y guardados.":avg>=55?"El plan tiene potencial, pero necesita mejorar conversación y señales de valor.":"El plan necesita replantear hooks, formatos y promesas de contenido.";document.getElementById("summary-metrics").innerHTML=`<div class="metric-line"><span>Publicaciones</span><b>${list.length}</b></div><div class="metric-line"><span>Mejor formato</span><b>${bestBy('format')}</b></div><div class="metric-line"><span>Mejor red</span><b>${bestBy('network')}</b></div><div class="metric-line"><span>Promedio Score</span><b>${avg}</b></div>`;document.getElementById("summary-bars").innerHTML=list.map(i=>`<div class="bar-row"><span>${i.title.slice(0,28)}</span><div class="bar-bg"><div class="bar-fill" style="width:${calcScore(i)}%"></div></div><b>${calcScore(i)}</b></div>`).join("");document.getElementById("print-summary").innerHTML=`<h1>Resumen Ejecutivo</h1><p><b>Cliente:</b> ${context.client} &nbsp; <b>Periodo:</b> ${context.month} ${context.year}</p><h2>Organic Content Score: ${avg}/100</h2><p>${document.getElementById("summary-diagnosis").textContent}</p>`}
 function bestBy(key){let list=currentItems();let map={};list.forEach(i=>{map[i[key]]=(map[i[key]]||0)+calcScore(i)});return Object.entries(map).sort((a,b)=>b[1]-a[1])[0]?.[0]||"---"}
 function renderContentCalendar(){const zone=document.getElementById("content-calendar-zone");if(!zone)return;const client=document.getElementById("cal-content-client")?.value||"__all";const month=document.getElementById("cal-content-month")?.value||context.month;const year=document.getElementById("cal-content-year")?.value||context.year;const status=document.getElementById("cal-content-status")?.value||"";const visibleClients=activeClientNames();let list=contentItems.filter(i=>(client==="__all"?visibleClients.includes(i.client):i.client===client)&&i.month===month&&i.year===year&&(!status||i.status===status));let y=Number(year),m=monthIndex[month];let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();let html='<div class="month-grid">'+["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].map(d=>`<div class="day-name">${d}</div>`).join("");for(let i=0;i<first;i++)html+='<div></div>';for(let d=1;d<=days;d++){let date=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;let dayItems=list.filter(t=>t.date===date);html+=`<div class="day-cell ${date===TODAY?'today':''}"><div class="cell-number"><span>${d}</span><span class="muted" style="font-size:.65rem">${dayItems.length?dayItems.length+' pub.':''}</span></div><div>${dayItems.map(t=>{let st=t.status==='Publicado'?'var(--neon-verde)':t.status==='En producción'?'var(--neon-amarillo)':'var(--neon-azul)';let sc=scripts.find(s=>s.id===t.scriptId);return `<div class="content-cal-item" style="--tcolor:${st}" onclick="openScriptForContent('${t.id}')"><div class="cal-title">${formatLabel(t.format)} ${t.title}</div><div class="mini"><span>${t.time} ${t.ampm||''}</span><span>${redLabel(t.network)}</span><span>${t.client}</span>${sc?`<span>📄 ${sc.status}</span>`:''}</div></div>`}).join("")}</div></div>`}zone.innerHTML=html+"</div>";}
-function setAgendaSyncStatus(txt){const el=document.getElementById('agenda-sync-status');if(el)el.textContent=txt}
-function initAgendaControls(){
-  const m=document.getElementById('agenda-month');
-  const y=document.getElementById('agenda-year');
-  const f=document.getElementById('agenda-filter');
-  if(m && !m.dataset.ready){m.innerHTML=months.map(x=>`<option>${x}</option>`).join('');m.dataset.ready='1'}
-  if(m)m.value=agendaContext.month;
-  if(y)y.value=agendaContext.year;
-  if(f)f.value=filterAgenda;
-}
-function setAgendaMonthYear(){
-  const m=document.getElementById('agenda-month');
-  const y=document.getElementById('agenda-year');
-  if(m)agendaContext.month=m.value;
-  if(y)agendaContext.year=String(y.value||new Date().getFullYear());
-  renderAgenda();
-}
-function changeAgendaMonth(delta){
-  let idx=monthIndex[agendaContext.month] ?? new Date().getMonth();
-  let year=Number(agendaContext.year||new Date().getFullYear());
-  idx+=delta;
-  if(idx<0){idx=11;year--}
-  if(idx>11){idx=0;year++}
-  agendaContext.month=months[idx];
-  agendaContext.year=String(year);
-  renderAgenda();
-}
-function goAgendaToday(){
-  const d=new Date();
-  agendaContext.month=months[d.getMonth()];
-  agendaContext.year=String(d.getFullYear());
-  renderAgenda();
-}
-function renderAgenda(){
-  initAgendaControls();
-  const zone=document.getElementById("agenda-zone");if(!zone)return;
-  const view=document.getElementById("agenda-view")?.value||'month';
-  let all=[...agendaTasks];
-  if(filterAgenda!=="all")all=all.filter(t=>statusColor(t.date).key===filterAgenda);
-  if(view!=="month"){
-    zone.innerHTML=`<div class="tasks-list">${all.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(taskCard).join("")}</div>`;
-    updateDashboardKpis();
-    return;
-  }
-  let y=Number(agendaContext.year),m=monthIndex[agendaContext.month];
-  let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
-  let html='<div class="month-grid">'+["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].map(d=>`<div class="day-name">${d}</div>`).join("");
-  for(let i=0;i<first;i++)html+='<div></div>';
-  for(let d=1;d<=days;d++){
-    let date=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    let dayTasks=all.filter(t=>t.date===date);
-    html+=`<div class="day-cell ${date===TODAY?'today':''}"><div class="cell-number"><span>${d}</span><button class="btn" style="padding:2px 7px;border-radius:8px;font-size:.72rem" onclick="addAgendaTask('${date}')">+</button></div><div>${dayTasks.map(t=>`<div class="calendar-task" style="--tcolor:${t.color||statusColor(t.date).color}" onclick="openAgendaEditor('${t.id}')"><div>${t.title}</div><div class="mini"><span>${statusColor(t.date).label}</span><span style="color:${t.color||'#00f0ff'}">🏷️ ${t.tag||'sin etiqueta'}</span><span>${t.time||''}</span></div></div>`).join("")}</div></div>`
-  }
-  zone.innerHTML=html+"</div>";
-  updateDashboardKpis();
-}
+function renderAgenda(){const zone=document.getElementById("agenda-zone");if(!zone)return;const view=document.getElementById("agenda-view").value;let all=[...agendaTasks];if(filterAgenda!=="all")all=all.filter(t=>statusColor(t.date).key===filterAgenda);if(view!=="month"){zone.innerHTML=`<div class="tasks-list">${all.sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).map(taskCard).join("")}</div>`;return}let y=Number(context.year),m=monthIndex[context.month];let first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();let html='<div class="month-grid">'+["Dom","Lun","Mar","Mié","Jue","Vie","Sáb"].map(d=>`<div class="day-name">${d}</div>`).join("");for(let i=0;i<first;i++)html+='<div></div>';for(let d=1;d<=days;d++){let date=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;let dayTasks=all.filter(t=>t.date===date);html+=`<div class="day-cell ${date===TODAY?'today':''}"><div class="cell-number"><span>${d}</span></div><div>${dayTasks.map(t=>`<div class="calendar-task" style="--tcolor:${t.color||statusColor(t.date).color}" onclick="openAgendaEditor('${t.id}')"><div>${t.title}</div><div class="mini"><span>${statusColor(t.date).label}</span><span style="color:${t.color||'#00f0ff'}">🏷️ ${t.tag||'sin etiqueta'}</span><span>${t.time||''}</span></div></div>`).join("")}</div></div>`}zone.innerHTML=html+"</div>";updateDashboardKpis()}
 function taskCard(t){const st=statusColor(t.date);return `<div class="task-item" onclick="openAgendaEditor('${t.id}')" style="border-left-color:${t.color||st.color};box-shadow:0 0 12px ${st.color}18"><div class="task-header-row"><span class="task-title">${t.title}</span><span class="task-badge" style="background:${st.color}20;color:${st.color};border:1px solid ${st.color}">${st.label}</span></div><div class="task-details"><span class="detail-tag" style="color:${t.color||'#fff'};border-color:${t.color||'var(--card-border)'}">🏷️ ${t.tag||'sin etiqueta'}</span><span>${t.date}</span><span>${t.time||''}</span><span style="color:#fff;font-weight:800">${st.desc}</span></div></div>`}
 let activeAgendaId=null;
-let __agendaCloudLoading=false;
-let __agendaCloudSyncTimer=null;
-function agendaIdIsUuid(id){return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(id||''))}
-function localAgendaToDb(t){return {titulo:t.title||'Sin título',fecha:t.date||TODAY,hora:t.time||'',estado:t.state||'Pendiente',etiqueta:t.tag||'',color_etiqueta:t.color||'#00f0ff',notas:t.notes||'',descripcion:t.description||''}}
-function dbAgendaToLocal(row){return {id:row.id,title:row.titulo||'Sin título',date:row.fecha||TODAY,time:row.hora||'',tag:row.etiqueta||'',color:row.color_etiqueta||'#00f0ff',notes:row.notas||row.descripcion||'',state:row.estado||'Pendiente'}}
-async function loadAgendaFromSupabase(){
-  const client=getLuminarCloudClient();
-  if(!client || __agendaCloudLoading){return false}
-  __agendaCloudLoading=true;setAgendaSyncStatus('Cargando agenda desde Supabase...');
-  try{
-    const {data,error}=await client.from('agenda_personal').select('*').order('fecha',{ascending:true}).order('hora',{ascending:true});
-    if(error)throw error;
-    if(Array.isArray(data) && data.length){agendaTasks=data.map(dbAgendaToLocal);setAgendaSyncStatus('Agenda sincronizada desde Supabase.');}
-    else{await syncAgendaToSupabase(true);setAgendaSyncStatus('Agenda inicial enviada a Supabase.');}
-    renderAgenda();renderDashboard();queueLuminarCloudSave();return true;
-  }catch(err){console.error('Luminar Cloud: error al cargar agenda.',err);setAgendaSyncStatus('Error al sincronizar agenda.');return false;}
-  finally{__agendaCloudLoading=false;}
-}
-function queueAgendaCloudSync(){clearTimeout(__agendaCloudSyncTimer);__agendaCloudSyncTimer=setTimeout(()=>syncAgendaToSupabase(false),650);}
-async function syncAgendaToSupabase(seedMode=false){
-  const client=getLuminarCloudClient();if(!client)return false;
-  try{
-    for(const t of agendaTasks){await saveAgendaTaskToSupabase(t,false)}
-    if(!seedMode)setAgendaSyncStatus('Agenda guardada en Supabase.');
-    return true;
-  }catch(err){console.error('Luminar Cloud: error al guardar agenda.',err);setAgendaSyncStatus('Error guardando agenda.');return false;}
-}
-async function saveAgendaTaskToSupabase(t,show=true){
-  const client=getLuminarCloudClient();if(!client||!t)return false;
-  try{
-    if(agendaIdIsUuid(t.id)){
-      const {error}=await client.from('agenda_personal').update(localAgendaToDb(t)).eq('id',t.id);
-      if(error)throw error;
-    }else{
-      const {data,error}=await client.from('agenda_personal').insert(localAgendaToDb(t)).select('id').single();
-      if(error)throw error;
-      if(data?.id)t.id=data.id;
-    }
-    if(show)setAgendaSyncStatus('Tarea guardada en Supabase.');
-    queueLuminarCloudSave();return true;
-  }catch(err){console.error('Luminar Cloud: error guardando tarea agenda.',err);setAgendaSyncStatus('Error guardando tarea.');return false;}
-}
 function openAgendaEditor(id){activeAgendaId=id;const t=agendaTasks.find(x=>x.id===id);if(!t)return;document.getElementById('agenda-editor').classList.add('active');document.getElementById('agenda-edit-title').value=t.title||'';document.getElementById('agenda-edit-date').value=t.date||TODAY;document.getElementById('agenda-edit-time').value=t.time||'09:00';document.getElementById('agenda-edit-tag').value=t.tag||'';document.getElementById('agenda-edit-color').value=t.color||'#00f0ff';document.getElementById('agenda-edit-notes').value=t.notes||'';updateAgendaPreview(t.tag,t.color)}
 function closeAgendaEditor(){document.getElementById('agenda-editor').classList.remove('active');activeAgendaId=null}
 function updateAgendaPreview(tag,color){const p=document.getElementById('agenda-tag-preview');if(!p)return;p.textContent='🏷️ '+(tag||'Etiqueta');p.style.color=color||'#00f0ff';p.style.borderColor=color||'#00f0ff';p.style.background=(color||'#00f0ff')+'22'}
-function syncAgendaEditor(rerender=false){const t=agendaTasks.find(x=>x.id===activeAgendaId);if(!t)return;t.title=document.getElementById('agenda-edit-title').value;t.date=document.getElementById('agenda-edit-date').value;t.time=document.getElementById('agenda-edit-time').value;t.tag=document.getElementById('agenda-edit-tag').value;t.color=document.getElementById('agenda-edit-color').value;t.notes=document.getElementById('agenda-edit-notes').value;updateAgendaPreview(t.tag,t.color);renderAgenda();renderDashboard();queueAgendaCloudSync();if(rerender)openAgendaEditor(t.id)}
-function addAgendaTask(date){const t={id:'AG-'+Date.now(),title:'Nueva tarea',date:date||TODAY,time:'09:00',tag:'tarea',color:'#00f0ff',notes:'',state:'Pendiente'};agendaTasks.push(t);renderAgenda();openAgendaEditor(t.id);saveAgendaTaskToSupabase(t)}
-function duplicateAgendaActive(){const t=agendaTasks.find(x=>x.id===activeAgendaId);if(!t)return;const copy={...t,id:'AG-'+Date.now(),title:(t.title||'Tarea')+' copia'};agendaTasks.push(copy);renderAgenda();openAgendaEditor(copy.id);saveAgendaTaskToSupabase(copy)}
-async function deleteAgendaActive(){if(!activeAgendaId)return;if(!confirm('¿Eliminar esta tarea personal?'))return;const id=activeAgendaId;agendaTasks=agendaTasks.filter(t=>t.id!==id);closeAgendaEditor();renderAgenda();renderDashboard();const client=getLuminarCloudClient();if(client&&agendaIdIsUuid(id)){try{const {error}=await client.from('agenda_personal').delete().eq('id',id);if(error)throw error;setAgendaSyncStatus('Tarea eliminada de Supabase.')}catch(err){console.error('Luminar Cloud: error eliminando tarea agenda.',err);setAgendaSyncStatus('Error eliminando tarea.')}}queueLuminarCloudSave()}
+function syncAgendaEditor(rerender=false){const t=agendaTasks.find(x=>x.id===activeAgendaId);if(!t)return;t.title=document.getElementById('agenda-edit-title').value;t.date=document.getElementById('agenda-edit-date').value;t.time=document.getElementById('agenda-edit-time').value;t.tag=document.getElementById('agenda-edit-tag').value;t.color=document.getElementById('agenda-edit-color').value;t.notes=document.getElementById('agenda-edit-notes').value;updateAgendaPreview(t.tag,t.color);renderAgenda();renderDashboard();if(rerender)openAgendaEditor(t.id)}
+function addAgendaTask(){const t={id:"AG-"+Date.now(),title:"Nueva tarea",date:TODAY,time:"09:00",tag:"tarea",color:"#00f0ff",notes:""};agendaTasks.push(t);renderAgenda();openAgendaEditor(t.id)}
+function duplicateAgendaActive(){const t=agendaTasks.find(x=>x.id===activeAgendaId);if(!t)return;const copy={...t,id:"AG-"+Date.now(),title:(t.title||'Tarea')+' copia'};agendaTasks.push(copy);renderAgenda();openAgendaEditor(copy.id)}
+function deleteAgendaActive(){if(!activeAgendaId)return;if(!confirm('¿Eliminar esta tarea personal?'))return;agendaTasks=agendaTasks.filter(t=>t.id!==activeAgendaId);closeAgendaEditor();renderAgenda();renderDashboard()}
 function updateDashboardKpis(){let all=[...agendaTasks];let counts={overdue:0,today:0,"due-soon":0,"on-track":0};all.forEach(t=>counts[statusColor(t.date).key]++);document.getElementById("kpi-overdue").textContent=counts.overdue;document.getElementById("kpi-today").textContent=counts.today;document.getElementById("kpi-soon").textContent=counts["due-soon"];document.getElementById("kpi-track").textContent=counts["on-track"];document.getElementById("dash-active").textContent=all.length}
 function renderDashboard(){updateDashboardKpis();const userName=(document.getElementById("profile-name")?.textContent||"Leo").trim();document.getElementById("dash-client").textContent=userName;document.getElementById("dash-month").textContent="Uso total";const dashUser=document.getElementById("dash-user-name");if(dashUser)dashUser.textContent=userName;const dashWelcome=document.getElementById("dash-welcome-name");if(dashWelcome)dashWelcome.textContent=userName;let all=[...agendaTasks].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));document.getElementById("dash-next").innerHTML=all.slice(0,3).map(taskCard).join("");document.getElementById("dashboard-tasks").innerHTML=all.slice(0,6).map(taskCard).join("");document.getElementById("weekly-load").innerHTML=["Lunes","Martes","Miércoles","Jueves","Viernes"].map((d,i)=>`<div class="bar-row"><span>${d}</span><div class="bar-bg"><div class="bar-fill" style="width:${[78,52,92,36,68][i]}%"></div></div><b>${[8,5,11,3,7][i]}</b></div>`).join("")}
 function renderNotes(){const list=document.getElementById("note-list");if(!list)return;let q=(document.getElementById("note-search")?.value||"").toLowerCase();let arr=notes.filter(n=>!q||n.title.toLowerCase().includes(q)||n.body.toLowerCase().includes(q));list.innerHTML=arr.map(n=>`<li class="page-link ${n.id===activeNoteId?'active':''}" onclick="activeNoteId='${n.id}';loadActiveNote()"><div class="page-title-row"><span>📄</span><span>${n.title}</span></div><div class="page-meta"><span class="pill">${n.tag}</span></div></li>`).join("");loadActiveNote()}
@@ -1121,6 +1166,164 @@ function startDashboardClock(){
 
 function renderAll(){renderDashboard();renderAgenda();renderContentPlan();renderContentCalendar();renderScripts();renderRadar();renderSummary();renderNotes();renderClientsPanel();updateDashboardDateTime()}
 
+
+
+/* ==========================================================
+   LUMINAR CLOUD - PLAN DE CONTENIDO ORDENADO EN SUPABASE
+   Tabla usada: planes_contenido
+   Mantiene la interfaz igual, pero guarda cada plan por:
+   cliente + mes + año.
+   ========================================================== */
+let __contentPlanCloudTimer=null;
+let __contentPlanCloudLoading=false;
+let __contentPlanCloudSaving=false;
+let __contentPlanLastSignature='';
+
+function normalizePlanYear(y){ return Number(String(y||context.year||new Date().getFullYear()).replace(/\D/g,'')) || new Date().getFullYear(); }
+function planClientLocal(name){ return clients.find(c=>clientKeyName(c.name)===clientKeyName(name||context.client)); }
+function currentPlanSignature(){
+  try{
+    return JSON.stringify({client:context.client,month:context.month,year:context.year,items:currentItems(),scripts:currentScripts()});
+  }catch(e){return String(Date.now())}
+}
+async function ensureClientIdForPlan(clientName){
+  const sb=getLuminarCloudClient();
+  if(!sb) return null;
+  let c=planClientLocal(clientName);
+  if(c?.id) return c.id;
+  if(typeof syncClientsToSupabase==='function') await syncClientsToSupabase(false);
+  c=planClientLocal(clientName);
+  if(c?.id) return c.id;
+  const {data,error}=await sb.from('clientes').select('id').ilike('nombre',clientName).maybeSingle();
+  if(error) throw error;
+  if(data?.id){ if(c)c.id=data.id; return data.id; }
+  return null;
+}
+function makePlanPayload(clientName=context.client,month=context.month,year=context.year){
+  const items=contentItems.filter(i=>i.client===clientName&&i.month===month&&String(i.year)===String(year));
+  const relatedIds=new Set(items.map(i=>i.id));
+  const relatedScripts=scripts.filter(s=>s.client===clientName&&s.month===month&&String(s.year)===String(year) || relatedIds.has(s.contentId));
+  return {
+    client:clientName,
+    month,
+    year:String(year),
+    items,
+    scripts:relatedScripts,
+    updated_at:new Date().toISOString()
+  };
+}
+async function saveCurrentPlanToSupabase(force=false){
+  const sb=getLuminarCloudClient();
+  if(!sb || __contentPlanCloudSaving) return false;
+  const signature=currentPlanSignature();
+  if(!force && signature===__contentPlanLastSignature) return true;
+  __contentPlanLastSignature=signature;
+  __contentPlanCloudSaving=true;
+  try{
+    const cliente_id=await ensureClientIdForPlan(context.client);
+    if(!cliente_id) throw new Error('No se encontró cliente_id para el plan activo.');
+    const mes=context.month;
+    const anio=normalizePlanYear(context.year);
+    const payload=makePlanPayload(context.client,mes,anio);
+    const titulo=`${context.client} · ${mes} ${anio}`;
+    const {data:existing,error:findErr}=await sb
+      .from('planes_contenido')
+      .select('id')
+      .eq('cliente_id',cliente_id)
+      .eq('mes',mes)
+      .eq('anio',anio)
+      .limit(1)
+      .maybeSingle();
+    if(findErr) throw findErr;
+    if(existing?.id){
+      const {error}=await sb.from('planes_contenido').update({titulo,estado:'activo',data:payload}).eq('id',existing.id);
+      if(error) throw error;
+    }else{
+      const {error}=await sb.from('planes_contenido').insert({cliente_id,mes,anio,titulo,estado:'activo',data:payload});
+      if(error) throw error;
+    }
+    console.log('Luminar Cloud: plan guardado por cliente/mes/año en planes_contenido.');
+    return true;
+  }catch(err){
+    console.error('Luminar Cloud: error al guardar plan de contenido.',err);
+    return false;
+  }finally{
+    __contentPlanCloudSaving=false;
+  }
+}
+function queueContentPlanCloudSync(){
+  if(!isSupabaseConfigured()) return;
+  clearTimeout(__contentPlanCloudTimer);
+  __contentPlanCloudTimer=setTimeout(()=>saveCurrentPlanToSupabase(false),900);
+  if(typeof queueLuminarCloudSave==='function') queueLuminarCloudSave();
+}
+function mergePlanPayload(payload){
+  if(!payload || !payload.client || !payload.month || !payload.year) return;
+  const clientName=payload.client;
+  const month=payload.month;
+  const year=String(payload.year);
+  if(Array.isArray(payload.items)){
+    const incomingIds=new Set(payload.items.map(i=>i.id));
+    contentItems=contentItems.filter(i=>!(i.client===clientName&&i.month===month&&String(i.year)===year&&incomingIds.has(i.id)));
+    payload.items.forEach(i=>contentItems.push(i));
+  }
+  if(Array.isArray(payload.scripts)){
+    const incomingIds=new Set(payload.scripts.map(s=>s.id));
+    scripts=scripts.filter(s=>!incomingIds.has(s.id));
+    payload.scripts.forEach(s=>scripts.push(s));
+  }
+}
+async function loadContentPlansFromSupabase(){
+  const sb=getLuminarCloudClient();
+  if(!sb || __contentPlanCloudLoading) return false;
+  __contentPlanCloudLoading=true;
+  try{
+    const {data,error}=await sb.from('planes_contenido').select('id,cliente_id,mes,anio,titulo,estado,data');
+    if(error) throw error;
+    if(Array.isArray(data) && data.length){
+      data.forEach(row=>{
+        const payload=row.data || {};
+        if(!payload.client){
+          const c=clients.find(x=>x.id===row.cliente_id);
+          payload.client=c?.name || context.client;
+        }
+        payload.month=payload.month || row.mes;
+        payload.year=String(payload.year || row.anio);
+        mergePlanPayload(payload);
+      });
+      initContextSelectors();
+      renderAll();
+      console.log('Luminar Cloud: planes cargados desde planes_contenido.');
+    }else{
+      await saveCurrentPlanToSupabase(true);
+      console.log('Luminar Cloud: plan inicial enviado a planes_contenido.');
+    }
+    return true;
+  }catch(err){
+    console.error('Luminar Cloud: error al cargar planes de contenido.',err);
+    return false;
+  }finally{
+    __contentPlanCloudLoading=false;
+  }
+}
+function installContentPlanCloudHooks(){
+  if(window.__contentPlanCloudHooksInstalled) return;
+  window.__contentPlanCloudHooksInstalled=true;
+  ['syncContext','mirrorContext','addContentItem','deleteContent','adjustContentCount','saveActiveScript','createScriptFromScratch'].forEach(fnName=>{
+    const original=window[fnName];
+    if(typeof original==='function'){
+      window[fnName]=function(...args){
+        const result=original.apply(this,args);
+        setTimeout(()=>queueContentPlanCloudSync(),50);
+        return result;
+      }
+    }
+  });
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  installContentPlanCloudHooks();
+  setTimeout(()=>loadContentPlansFromSupabase(),2100);
+});
 
 /* ==========================================================
    LUMINAR CLOUD - MÓDULO CLIENTES REAL EN SUPABASE
@@ -1272,157 +1475,11 @@ async function deleteClientFull(name){
     }catch(err){console.error('Luminar Cloud: error al borrar cliente.',err);}
   }
 }
-
-
-/* ==========================================================
-   LUMINAR CLOUD - CONFIGURACIÓN Y PERFIL PERSISTENTES
-   Guarda y restaura colores, tipografía, botones, estadísticas,
-   pop-ups, nombre y foto desde configuracion_luminar.
-   ========================================================== */
-function safeJSONParseLuminar(raw, fallback=null){
-  try{return raw ? JSON.parse(raw) : fallback}catch(e){return fallback}
-}
-function setLuminarFieldValue(id,val){
-  const el=document.getElementById(id);
-  if(el && val!==undefined && val!==null) el.value=val;
-}
-function captureThemeFromControls(){
-  return {
-    mode:document.getElementById('bg-mode')?.value||'gradient',
-    dir:document.getElementById('bg-dir')?.value||'135deg',
-    start:document.getElementById('bg-start')?.value||'#0a0f24',
-    end:document.getElementById('bg-end')?.value||'#1a0b2e',
-    solid:document.getElementById('bg-solid')?.value||'#0a0f24',
-    font:document.getElementById('font-main')?.value||"'Plus Jakarta Sans',sans-serif"
-  };
-}
-function captureVisualColorsFromControls(){
-  return {
-    btnMode:document.getElementById('btn-color-mode')?.value||'gradient',
-    b1:document.getElementById('btn-color-1')?.value||'#00f0ff',
-    b2:document.getElementById('btn-color-2')?.value||'#ff00ff',
-    b3:document.getElementById('btn-color-3')?.value||'#00e676',
-    statMode:document.getElementById('stats-color-mode')?.value||'independent',
-    stats:[1,2,3,4].map(i=>document.getElementById(`stat-color-${i}`)?.value||['#ff3366','#ffcc00','#00f0ff','#00e676'][i-1]),
-    popMode:document.getElementById('popup-color-mode')?.value||'gradient',
-    p1:document.getElementById('popup-color-1')?.value||'#101a36',
-    p2:document.getElementById('popup-color-2')?.value||'#00f0ff'
-  };
-}
-function applyThemeFromObject(t, shouldSave=false){
-  if(!t) return;
-  setLuminarFieldValue('bg-mode',t.mode);
-  setLuminarFieldValue('bg-dir',t.dir);
-  setLuminarFieldValue('bg-start',t.start);
-  setLuminarFieldValue('bg-end',t.end);
-  setLuminarFieldValue('bg-solid',t.solid);
-  setLuminarFieldValue('font-main',t.font);
-  applyTheme(shouldSave);
-}
-function loadThemeFromStorage(){
-  const t=safeJSONParseLuminar(localStorage.getItem('luminarThemeLive'),null);
-  if(t) applyThemeFromObject(t,false);
-}
-function applyTheme(shouldSave=true){
-  const t=captureThemeFromControls();
-  const root=document.documentElement;
-  root.style.setProperty('--font-main',t.font);
-  root.style.setProperty('--bg-solid',t.solid);
-  root.style.setProperty('--bg-gradient-start',t.start);
-  root.style.setProperty('--bg-gradient-end',t.end);
-  root.style.setProperty('--bg-gradient-dir',t.dir);
-  const sideA=t.mode==='solid'?darkenHex(t.solid,.48):darkenHex(t.start,.48);
-  const sideB=t.mode==='solid'?darkenHex(t.solid,.34):darkenHex(t.end,.34);
-  root.style.setProperty('--sidebar-bg',t.mode==='solid'?sideA:`linear-gradient(180deg, ${sideA}, ${sideB})`);
-  document.body.classList.toggle('solid-bg',t.mode==='solid');
-  document.body.style.backgroundImage='none';
-  document.body.style.background=t.mode==='solid'?t.solid:(String(t.dir).includes('circle')?`radial-gradient(${t.dir}, ${t.start}, ${t.end})`:`linear-gradient(${t.dir}, ${t.start}, ${t.end})`);
-  document.body.style.backgroundAttachment='fixed';
-  localStorage.setItem('luminarThemeLive',JSON.stringify(t));
-  if(typeof applyVisualColors==='function') applyVisualColors(false);
-  if(shouldSave) queueLuminarCloudSave();
-}
-function saveTheme(){
-  applyTheme(true);
-  saveLuminarCloudState(true);
-  alert('Personalización guardada en la nube.');
-}
-function applyVisualColors(shouldSave=true){
-  const d=captureVisualColorsFromControls();
-  const auto=autoPalette();
-  document.querySelectorAll('.btn-primary').forEach((el,i)=>{
-    let bg=d.b1;
-    if(d.btnMode==='solid'){el.style.background=d.b1;bg=d.b1}
-    else if(d.btnMode==='gradient'){el.style.background=`linear-gradient(135deg, ${d.b1}, ${d.b2})`;bg=mixHex(d.b1,d.b2,.5)}
-    else{bg=[d.b1,d.b2,d.b3,...auto][i%([d.b1,d.b2,d.b3,...auto].length)];el.style.background=bg;}
-    setButtonContrast(el,bg);
-  });
-  const statColors=d.statMode==='multicolor'?auto.slice(0,4):(d.statMode==='gradient'?[0,.33,.66,1].map(t=>mixHex(d.stats[0],d.stats[3],t)):d.stats);
-  document.querySelectorAll('.kpi-card').forEach((el,i)=>el.style.setProperty('--kpi-color',statColors[i%4]));
-  const popBg=d.popMode==='solid'?d.p1:(d.popMode==='multicolor'?`linear-gradient(135deg, ${auto[0]}, ${auto[1]})`:`linear-gradient(135deg, ${d.p1}, ${d.p2})`);
-  const popRef=d.popMode==='solid'?d.p1:mixHex(d.p1,d.p2,.5);
-  const box=document.getElementById('luminar-popup-box');
-  if(box){
-    box.style.background=popBg;
-    box.style.color=readableText(popRef);
-    box.style.borderColor=d.p2+'88';
-    box.querySelectorAll('.btn').forEach(b=>{b.style.background=d.p2;b.style.color=readableText(d.p2);b.style.borderColor=d.p2;});
-  }
-  localStorage.setItem('luminarVisualColors',JSON.stringify(d));
-  if(shouldSave) queueLuminarCloudSave();
-}
-function loadVisualColors(){
-  const d=safeJSONParseLuminar(localStorage.getItem('luminarVisualColors'),null);
-  if(d){
-    setLuminarFieldValue('btn-color-mode',d.btnMode);
-    setLuminarFieldValue('btn-color-1',d.b1);
-    setLuminarFieldValue('btn-color-2',d.b2);
-    setLuminarFieldValue('btn-color-3',d.b3);
-    setLuminarFieldValue('stats-color-mode',d.statMode);
-    (d.stats||[]).forEach((v,i)=>setLuminarFieldValue(`stat-color-${i+1}`,v));
-    setLuminarFieldValue('popup-color-mode',d.popMode);
-    setLuminarFieldValue('popup-color-1',d.p1);
-    setLuminarFieldValue('popup-color-2',d.p2);
-  }
-  applyVisualColors(false);
-}
-function saveProfile(){
-  const name=document.getElementById('profile-input-name')?.value||'Leo';
-  const gender=document.getElementById('profile-gender')?.value||'masculino';
-  document.getElementById('profile-name').textContent=name;
-  const dashUser=document.getElementById('dash-user-name');if(dashUser)dashUser.textContent=name;
-  const dashWelcome=document.getElementById('dash-welcome-name');if(dashWelcome)dashWelcome.textContent=name;
-  localStorage.setItem('luminarProfileName',name);
-  localStorage.setItem('luminarProfileGender',gender);
-  renderDashboard();
-  queueLuminarCloudSave();
-  saveLuminarCloudState(true);
-  alert('Perfil guardado en la nube.');
-}
-function loadProfileFromStorage(){
-  const n=localStorage.getItem('luminarProfileName')||'Leo';
-  const g=localStorage.getItem('luminarProfileGender')||'masculino';
-  if(document.getElementById('profile-name')) document.getElementById('profile-name').textContent=n;
-  if(document.getElementById('profile-input-name')) document.getElementById('profile-input-name').value=n;
-  if(document.getElementById('profile-gender')) document.getElementById('profile-gender').value=g;
-  const dashUser=document.getElementById('dash-user-name');if(dashUser)dashUser.textContent=n;
-  const dashWelcome=document.getElementById('dash-welcome-name');if(dashWelcome)dashWelcome.textContent=n;
-  const p=localStorage.getItem('luminarPhoto');
-  if(p && document.getElementById('profile-pic')) document.getElementById('profile-pic').src=p;
-}
-function loadProfilePhoto(e){
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{document.getElementById('profile-pic').src=r.result;localStorage.setItem('luminarPhoto',r.result);queueLuminarCloudSave();saveLuminarCloudState(true)};
-  r.readAsDataURL(f);
-}
-
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>loadClientsFromSupabase(),1300);
-  setTimeout(()=>loadAgendaFromSupabase(),1800);
 });
 
-document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");await loadLuminarCloudState();loadThemeFromStorage();loadProfileFromStorage();initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();installLuminarCloudAutosave();queueLuminarCloudSave();});
+document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");await loadLuminarCloudState();const n=localStorage.getItem("luminarProfileName");if(n){document.getElementById("profile-name").textContent=n;document.getElementById("profile-input-name").value=n}const p=localStorage.getItem("luminarPhoto");if(p)document.getElementById("profile-pic").src=p;initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();installLuminarCloudAutosave();queueLuminarCloudSave();});
 </script>
 </body>
 </html>
