@@ -452,6 +452,7 @@ function captureLuminarState(){
     activeScriptId: typeof activeScriptId !== "undefined" ? activeScriptId : null,
     activeNoteId: typeof activeNoteId !== "undefined" ? activeNoteId : null,
     profileName: localStorage.getItem("luminarProfileName") || "Leo",
+    profileGender: localStorage.getItem("luminarProfileGender") || "masculino",
     profilePhoto: localStorage.getItem("luminarPhoto") || "",
     theme: localStorage.getItem("luminarThemeLive") || "",
     visualColors: localStorage.getItem("luminarVisualColors") || ""
@@ -470,6 +471,7 @@ function applyLuminarState(state){
     if(state.activeScriptId) activeScriptId = state.activeScriptId;
     if(state.activeNoteId) activeNoteId = state.activeNoteId;
     if(state.profileName) localStorage.setItem("luminarProfileName", state.profileName);
+    if(state.profileGender) localStorage.setItem("luminarProfileGender", state.profileGender);
     if(state.profilePhoto) localStorage.setItem("luminarPhoto", state.profilePhoto);
     if(state.theme) localStorage.setItem("luminarThemeLive", state.theme);
     if(state.visualColors) localStorage.setItem("luminarVisualColors", state.visualColors);
@@ -1092,12 +1094,157 @@ async function deleteClientFull(name){
     }catch(err){console.error('Luminar Cloud: error al borrar cliente.',err);}
   }
 }
+
+
+/* ==========================================================
+   LUMINAR CLOUD - CONFIGURACIÓN Y PERFIL PERSISTENTES
+   Guarda y restaura colores, tipografía, botones, estadísticas,
+   pop-ups, nombre y foto desde configuracion_luminar.
+   ========================================================== */
+function safeJSONParseLuminar(raw, fallback=null){
+  try{return raw ? JSON.parse(raw) : fallback}catch(e){return fallback}
+}
+function setLuminarFieldValue(id,val){
+  const el=document.getElementById(id);
+  if(el && val!==undefined && val!==null) el.value=val;
+}
+function captureThemeFromControls(){
+  return {
+    mode:document.getElementById('bg-mode')?.value||'gradient',
+    dir:document.getElementById('bg-dir')?.value||'135deg',
+    start:document.getElementById('bg-start')?.value||'#0a0f24',
+    end:document.getElementById('bg-end')?.value||'#1a0b2e',
+    solid:document.getElementById('bg-solid')?.value||'#0a0f24',
+    font:document.getElementById('font-main')?.value||"'Plus Jakarta Sans',sans-serif"
+  };
+}
+function captureVisualColorsFromControls(){
+  return {
+    btnMode:document.getElementById('btn-color-mode')?.value||'gradient',
+    b1:document.getElementById('btn-color-1')?.value||'#00f0ff',
+    b2:document.getElementById('btn-color-2')?.value||'#ff00ff',
+    b3:document.getElementById('btn-color-3')?.value||'#00e676',
+    statMode:document.getElementById('stats-color-mode')?.value||'independent',
+    stats:[1,2,3,4].map(i=>document.getElementById(`stat-color-${i}`)?.value||['#ff3366','#ffcc00','#00f0ff','#00e676'][i-1]),
+    popMode:document.getElementById('popup-color-mode')?.value||'gradient',
+    p1:document.getElementById('popup-color-1')?.value||'#101a36',
+    p2:document.getElementById('popup-color-2')?.value||'#00f0ff'
+  };
+}
+function applyThemeFromObject(t, shouldSave=false){
+  if(!t) return;
+  setLuminarFieldValue('bg-mode',t.mode);
+  setLuminarFieldValue('bg-dir',t.dir);
+  setLuminarFieldValue('bg-start',t.start);
+  setLuminarFieldValue('bg-end',t.end);
+  setLuminarFieldValue('bg-solid',t.solid);
+  setLuminarFieldValue('font-main',t.font);
+  applyTheme(shouldSave);
+}
+function loadThemeFromStorage(){
+  const t=safeJSONParseLuminar(localStorage.getItem('luminarThemeLive'),null);
+  if(t) applyThemeFromObject(t,false);
+}
+function applyTheme(shouldSave=true){
+  const t=captureThemeFromControls();
+  const root=document.documentElement;
+  root.style.setProperty('--font-main',t.font);
+  root.style.setProperty('--bg-solid',t.solid);
+  root.style.setProperty('--bg-gradient-start',t.start);
+  root.style.setProperty('--bg-gradient-end',t.end);
+  root.style.setProperty('--bg-gradient-dir',t.dir);
+  const sideA=t.mode==='solid'?darkenHex(t.solid,.48):darkenHex(t.start,.48);
+  const sideB=t.mode==='solid'?darkenHex(t.solid,.34):darkenHex(t.end,.34);
+  root.style.setProperty('--sidebar-bg',t.mode==='solid'?sideA:`linear-gradient(180deg, ${sideA}, ${sideB})`);
+  document.body.classList.toggle('solid-bg',t.mode==='solid');
+  document.body.style.backgroundImage='none';
+  document.body.style.background=t.mode==='solid'?t.solid:(String(t.dir).includes('circle')?`radial-gradient(${t.dir}, ${t.start}, ${t.end})`:`linear-gradient(${t.dir}, ${t.start}, ${t.end})`);
+  document.body.style.backgroundAttachment='fixed';
+  localStorage.setItem('luminarThemeLive',JSON.stringify(t));
+  if(typeof applyVisualColors==='function') applyVisualColors(false);
+  if(shouldSave) queueLuminarCloudSave();
+}
+function saveTheme(){
+  applyTheme(true);
+  saveLuminarCloudState(true);
+  alert('Personalización guardada en la nube.');
+}
+function applyVisualColors(shouldSave=true){
+  const d=captureVisualColorsFromControls();
+  const auto=autoPalette();
+  document.querySelectorAll('.btn-primary').forEach((el,i)=>{
+    let bg=d.b1;
+    if(d.btnMode==='solid'){el.style.background=d.b1;bg=d.b1}
+    else if(d.btnMode==='gradient'){el.style.background=`linear-gradient(135deg, ${d.b1}, ${d.b2})`;bg=mixHex(d.b1,d.b2,.5)}
+    else{bg=[d.b1,d.b2,d.b3,...auto][i%([d.b1,d.b2,d.b3,...auto].length)];el.style.background=bg;}
+    setButtonContrast(el,bg);
+  });
+  const statColors=d.statMode==='multicolor'?auto.slice(0,4):(d.statMode==='gradient'?[0,.33,.66,1].map(t=>mixHex(d.stats[0],d.stats[3],t)):d.stats);
+  document.querySelectorAll('.kpi-card').forEach((el,i)=>el.style.setProperty('--kpi-color',statColors[i%4]));
+  const popBg=d.popMode==='solid'?d.p1:(d.popMode==='multicolor'?`linear-gradient(135deg, ${auto[0]}, ${auto[1]})`:`linear-gradient(135deg, ${d.p1}, ${d.p2})`);
+  const popRef=d.popMode==='solid'?d.p1:mixHex(d.p1,d.p2,.5);
+  const box=document.getElementById('luminar-popup-box');
+  if(box){
+    box.style.background=popBg;
+    box.style.color=readableText(popRef);
+    box.style.borderColor=d.p2+'88';
+    box.querySelectorAll('.btn').forEach(b=>{b.style.background=d.p2;b.style.color=readableText(d.p2);b.style.borderColor=d.p2;});
+  }
+  localStorage.setItem('luminarVisualColors',JSON.stringify(d));
+  if(shouldSave) queueLuminarCloudSave();
+}
+function loadVisualColors(){
+  const d=safeJSONParseLuminar(localStorage.getItem('luminarVisualColors'),null);
+  if(d){
+    setLuminarFieldValue('btn-color-mode',d.btnMode);
+    setLuminarFieldValue('btn-color-1',d.b1);
+    setLuminarFieldValue('btn-color-2',d.b2);
+    setLuminarFieldValue('btn-color-3',d.b3);
+    setLuminarFieldValue('stats-color-mode',d.statMode);
+    (d.stats||[]).forEach((v,i)=>setLuminarFieldValue(`stat-color-${i+1}`,v));
+    setLuminarFieldValue('popup-color-mode',d.popMode);
+    setLuminarFieldValue('popup-color-1',d.p1);
+    setLuminarFieldValue('popup-color-2',d.p2);
+  }
+  applyVisualColors(false);
+}
+function saveProfile(){
+  const name=document.getElementById('profile-input-name')?.value||'Leo';
+  const gender=document.getElementById('profile-gender')?.value||'masculino';
+  document.getElementById('profile-name').textContent=name;
+  const dashUser=document.getElementById('dash-user-name');if(dashUser)dashUser.textContent=name;
+  const dashWelcome=document.getElementById('dash-welcome-name');if(dashWelcome)dashWelcome.textContent=name;
+  localStorage.setItem('luminarProfileName',name);
+  localStorage.setItem('luminarProfileGender',gender);
+  renderDashboard();
+  queueLuminarCloudSave();
+  saveLuminarCloudState(true);
+  alert('Perfil guardado en la nube.');
+}
+function loadProfileFromStorage(){
+  const n=localStorage.getItem('luminarProfileName')||'Leo';
+  const g=localStorage.getItem('luminarProfileGender')||'masculino';
+  if(document.getElementById('profile-name')) document.getElementById('profile-name').textContent=n;
+  if(document.getElementById('profile-input-name')) document.getElementById('profile-input-name').value=n;
+  if(document.getElementById('profile-gender')) document.getElementById('profile-gender').value=g;
+  const dashUser=document.getElementById('dash-user-name');if(dashUser)dashUser.textContent=n;
+  const dashWelcome=document.getElementById('dash-welcome-name');if(dashWelcome)dashWelcome.textContent=n;
+  const p=localStorage.getItem('luminarPhoto');
+  if(p && document.getElementById('profile-pic')) document.getElementById('profile-pic').src=p;
+}
+function loadProfilePhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{document.getElementById('profile-pic').src=r.result;localStorage.setItem('luminarPhoto',r.result);queueLuminarCloudSave();saveLuminarCloudState(true)};
+  r.readAsDataURL(f);
+}
+
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>loadClientsFromSupabase(),1300);
   setTimeout(()=>loadAgendaFromSupabase(),1800);
 });
 
-document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");await loadLuminarCloudState();const n=localStorage.getItem("luminarProfileName");if(n){document.getElementById("profile-name").textContent=n;document.getElementById("profile-input-name").value=n}const p=localStorage.getItem("luminarPhoto");if(p)document.getElementById("profile-pic").src=p;initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();installLuminarCloudAutosave();queueLuminarCloudSave();});
+document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");await loadLuminarCloudState();loadThemeFromStorage();loadProfileFromStorage();initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();installLuminarCloudAutosave();queueLuminarCloudSave();});
 </script>
 </body>
 </html>
