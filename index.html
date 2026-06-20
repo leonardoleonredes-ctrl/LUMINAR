@@ -729,7 +729,167 @@ Se quitará de la biblioteca de etiquetas. Las tareas que ya la usan conservará
 <div class="field" style="margin-top:1rem"><label>Notas</label><textarea class="input" id="agenda-edit-notes" oninput="syncAgendaEditor()" placeholder="Notas internas" rows="3"></textarea></div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:1rem"><button class="btn" onclick="duplicateAgendaActive()">Duplicar</button><button class="btn-danger" onclick="deleteAgendaActive()">Eliminar</button></div>
 </aside>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+
+/* ==========================================================
+   SUPABASE CLOUD SYNC - LUMINAR
+   1) Reemplaza estos 2 valores con tus datos de Supabase.
+   2) No uses la Secret Key. Solo Publishable key.
+   3) Esta primera integración guarda una copia completa del estado
+      de Luminar en configuracion_luminar(clave='luminar_app_state').
+   ========================================================== */
+const SUPABASE_URL = "PEGA_AQUI_TU_PROJECT_URL";
+const SUPABASE_KEY = "PEGA_AQUI_TU_PUBLISHABLE_KEY";
+const LUMINAR_CLOUD_KEY = "luminar_app_state";
+let luminarCloudClient = null;
+let luminarCloudReady = false;
+let luminarCloudSaving = false;
+let luminarCloudSaveTimer = null;
+let luminarCloudLastPayload = "";
+
+function isSupabaseConfigured(){
+  return SUPABASE_URL && SUPABASE_KEY &&
+    !SUPABASE_URL.includes("PEGA_AQUI") &&
+    !SUPABASE_KEY.includes("PEGA_AQUI") &&
+    typeof supabase !== "undefined";
+}
+function getLuminarCloudClient(){
+  if(!isSupabaseConfigured()) return null;
+  if(!luminarCloudClient){
+    luminarCloudClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+  return luminarCloudClient;
+}
+function captureLuminarState(){
+  return {
+    version: 1,
+    updated_at: new Date().toISOString(),
+    clients: typeof clients !== "undefined" ? clients : [],
+    CLIENT_DELETE_PIN: typeof CLIENT_DELETE_PIN !== "undefined" ? CLIENT_DELETE_PIN : "1234",
+    context: typeof context !== "undefined" ? context : null,
+    contentItems: typeof contentItems !== "undefined" ? contentItems : [],
+    scripts: typeof scripts !== "undefined" ? scripts : [],
+    agendaTasks: typeof agendaTasks !== "undefined" ? agendaTasks : [],
+    notes: typeof notes !== "undefined" ? notes : [],
+    activeScriptId: typeof activeScriptId !== "undefined" ? activeScriptId : null,
+    activeNoteId: typeof activeNoteId !== "undefined" ? activeNoteId : null,
+    profileName: localStorage.getItem("luminarProfileName") || "Leo",
+    profilePhoto: localStorage.getItem("luminarPhoto") || "",
+    theme: localStorage.getItem("luminarThemeLive") || "",
+    visualColors: localStorage.getItem("luminarVisualColors") || ""
+  };
+}
+function applyLuminarState(state){
+  if(!state || typeof state !== "object") return;
+  try{
+    if(Array.isArray(state.clients)) clients = normalizeClients(state.clients);
+    if(state.CLIENT_DELETE_PIN) CLIENT_DELETE_PIN = state.CLIENT_DELETE_PIN;
+    if(state.context && typeof state.context === "object") context = {...context, ...state.context};
+    if(Array.isArray(state.contentItems)) contentItems = state.contentItems;
+    if(Array.isArray(state.scripts)) scripts = state.scripts;
+    if(Array.isArray(state.agendaTasks)) agendaTasks = state.agendaTasks;
+    if(Array.isArray(state.notes)) notes = state.notes;
+    if(state.activeScriptId) activeScriptId = state.activeScriptId;
+    if(state.activeNoteId) activeNoteId = state.activeNoteId;
+    if(state.profileName) localStorage.setItem("luminarProfileName", state.profileName);
+    if(state.profilePhoto) localStorage.setItem("luminarPhoto", state.profilePhoto);
+    if(state.theme) localStorage.setItem("luminarThemeLive", state.theme);
+    if(state.visualColors) localStorage.setItem("luminarVisualColors", state.visualColors);
+    if(typeof saveClients === "function") saveClients();
+  }catch(err){
+    console.warn("No se pudo aplicar estado Supabase:", err);
+  }
+}
+async function loadLuminarCloudState(){
+  const client = getLuminarCloudClient();
+  if(!client){ console.log("Luminar Cloud: Supabase no configurado todavía."); return false; }
+  try{
+    const { data, error } = await client
+      .from("configuracion_luminar")
+      .select("valor")
+      .eq("clave", LUMINAR_CLOUD_KEY)
+      .maybeSingle();
+
+    if(error) throw error;
+    if(data && data.valor){
+      applyLuminarState(data.valor);
+      console.log("Luminar Cloud: datos cargados desde Supabase.");
+    } else {
+      await saveLuminarCloudState(true);
+      console.log("Luminar Cloud: estado inicial creado en Supabase.");
+    }
+    luminarCloudReady = true;
+    return true;
+  }catch(err){
+    console.error("Luminar Cloud: error al cargar datos.", err);
+    return false;
+  }
+}
+async function saveLuminarCloudState(force=false){
+  const client = getLuminarCloudClient();
+  if(!client || luminarCloudSaving) return false;
+
+  const payload = captureLuminarState();
+  const serialized = JSON.stringify(payload);
+  if(!force && serialized === luminarCloudLastPayload) return true;
+  luminarCloudLastPayload = serialized;
+
+  luminarCloudSaving = true;
+  try{
+    const { error } = await client
+      .from("configuracion_luminar")
+      .upsert({
+        clave: LUMINAR_CLOUD_KEY,
+        valor: payload,
+        updated_at: new Date().toISOString()
+      }, { onConflict: "clave" });
+
+    if(error) throw error;
+    console.log("Luminar Cloud: guardado en Supabase.");
+    return true;
+  }catch(err){
+    console.error("Luminar Cloud: error al guardar.", err);
+    return false;
+  }finally{
+    luminarCloudSaving = false;
+  }
+}
+function queueLuminarCloudSave(){
+  if(!isSupabaseConfigured()) return;
+  clearTimeout(luminarCloudSaveTimer);
+  luminarCloudSaveTimer = setTimeout(()=>saveLuminarCloudState(false), 900);
+}
+function installLuminarCloudAutosave(){
+  if(!isSupabaseConfigured()) return;
+
+  [
+    "renderAll",
+    "renderDashboard",
+    "renderContentPlan",
+    "renderScripts",
+    "renderAgenda",
+    "renderNotes",
+    "renderRadar",
+    "renderSummary",
+    "renderContentCalendar"
+  ].forEach(fnName=>{
+    const original = window[fnName];
+    if(typeof original === "function" && !original.__cloudWrapped){
+      const wrapped = function(...args){
+        const result = original.apply(this,args);
+        queueLuminarCloudSave();
+        return result;
+      };
+      wrapped.__cloudWrapped = true;
+      window[fnName] = wrapped;
+    }
+  });
+
+  window.addEventListener("beforeunload", ()=>{ try{ saveLuminarCloudState(false); }catch(e){} });
+  setInterval(queueLuminarCloudSave, 6000);
+}
+
 const TODAY="2026-06-19";
 let context={client:"AXXION Academy",month:"Junio",year:"2026"};
 let clients=normalizeClients(JSON.parse(localStorage.getItem("luminarClients")||"null") || ["AXXION Academy","BEQ Partners","Promotick","Proyecto Personal"]);
@@ -1005,7 +1165,7 @@ function startDashboardClock(){
 }
 
 function renderAll(){renderDashboard();renderAgenda();renderContentPlan();renderContentCalendar();renderScripts();renderRadar();renderSummary();renderNotes();renderClientsPanel();updateDashboardDateTime()}
-document.addEventListener("DOMContentLoaded",()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");const n=localStorage.getItem("luminarProfileName");if(n){document.getElementById("profile-name").textContent=n;document.getElementById("profile-input-name").value=n}const p=localStorage.getItem("luminarPhoto");if(p)document.getElementById("profile-pic").src=p;initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();});
+document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("luminarSidebar")==="yes")document.body.classList.add("sidebar-collapsed");await loadLuminarCloudState();const n=localStorage.getItem("luminarProfileName");if(n){document.getElementById("profile-name").textContent=n;document.getElementById("profile-input-name").value=n}const p=localStorage.getItem("luminarPhoto");if(p)document.getElementById("profile-pic").src=p;initContextSelectors();renderAll();startDashboardClock();if(typeof loadVisualColors==="function")loadVisualColors();installLuminarCloudAutosave();queueLuminarCloudSave();});
 </script>
 </body>
 </html>
