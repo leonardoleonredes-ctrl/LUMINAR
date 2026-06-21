@@ -9526,9 +9526,10 @@ function updateDashboardDateTime(){
   timeEl.textContent=timeText;
 }
 function startDashboardClock(){
-  updateDashboardDateTime();
-  if(window.__luminarClock)clearInterval(window.__luminarClock);
-  window.__luminarClock=setInterval(updateDashboardDateTime,1000);
+  // Reloj centralizado: no crea otro setInterval sobre #dash-current-time.
+  if(window.__luminarClock){ clearInterval(window.__luminarClock); window.__luminarClock=null; }
+  if(typeof window.aztraUpdateLiveClock==='function') window.aztraUpdateLiveClock();
+  else updateDashboardDateTime();
 }
 
 function renderAll(){renderDashboard();renderAgenda();renderContentPlan();renderContentCalendar();renderScripts();renderRadar();renderSummary();renderNotes();renderClientsPanel();updateDashboardDateTime()}
@@ -10584,38 +10585,6 @@ document.addEventListener("DOMContentLoaded",async()=>{if(localStorage.getItem("
   });
 })();
 </script>
-
-
-<script id="luminar-date-clock-refuerzo-final">
-/* Refuerzo de fecha/hora: no cambia maquetado, solo asegura actualización diaria */
-(function(){
-  function padLum(n){return String(n).padStart(2,'0');}
-  function lumFmtTime(d){
-    let h=d.getHours();
-    const ampm=h>=12?'PM':'AM';
-    h=h%12 || 12;
-    return `${padLum(h)}:${padLum(d.getMinutes())}:${padLum(d.getSeconds())}<span class="ampm">${ampm}</span>`;
-  }
-  function lumUpdateDateClock(){
-    const d=new Date();
-    const dayNumber=document.getElementById('dash-day-number');
-    const monthYear=document.getElementById('dash-month-year');
-    const weekday=document.getElementById('dash-weekday');
-    const time=document.getElementById('dash-current-time');
-
-    if(dayNumber) dayNumber.textContent=padLum(d.getDate());
-    if(monthYear) monthYear.textContent=d.toLocaleDateString('es-PE',{month:'long',year:'numeric'}).toUpperCase();
-    if(weekday) weekday.textContent=d.toLocaleDateString('es-PE',{weekday:'long'}).replace(/^./,c=>c.toUpperCase());
-    if(time) time.innerHTML=lumFmtTime(d);
-  }
-
-  lumUpdateDateClock();
-  if(window.__luminarDateClockRefuerzoFinal) clearInterval(window.__luminarDateClockRefuerzoFinal);
-  window.__luminarDateClockRefuerzoFinal=setInterval(lumUpdateDateClock,1000);
-  document.addEventListener('DOMContentLoaded',lumUpdateDateClock);
-})();
-</script>
-
 
 <script id="luminar-normalizar-iconos-emojis-final">
 /* ==========================================================
@@ -14997,16 +14966,24 @@ function applyLuminarThemePreset(name){
         <button class="aztra-auth-close" onclick="aztraCloseAuthModal()">×</button>
         <h2>Acceso Aztra OS</h2>
         <p>Inicia sesión con Supabase Auth para aplicar perfiles, roles y permisos.</p>
-        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" type="email" placeholder="usuario@empresa.com"></div>
-        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" type="password" placeholder="Contraseña"></div>
+        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" name="email" type="email" autocomplete="email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" name="password" type="password" autocomplete="current-password" placeholder="Contraseña"></div>
         <div class="aztra-access-actions">
-          <button class="btn-primary" onclick="aztraSignIn()">Ingresar</button>
+          <button class="btn-primary" id="aztra-login-submit" onclick="aztraSignIn()">Ingresar</button>
           <button class="btn" onclick="aztraCloseAuthModal()">Cancelar</button>
         </div>
       </div>`;
       document.body.appendChild(modal);
     }
     modal.classList.add('active');
+    const sendOnEnter=function(ev){
+      if(ev.key==='Enter'){
+        ev.preventDefault();
+        window.aztraSignIn();
+      }
+    };
+    $('aztra-login-email')?.addEventListener('keydown',sendOnEnter);
+    $('aztra-login-password')?.addEventListener('keydown',sendOnEnter);
   };
 
   window.aztraCloseAuthModal=function(){
@@ -15014,20 +14991,28 @@ function applyLuminarThemePreset(name){
   };
 
   window.aztraSignIn=async function(){
-    initClient();
-    if(!aztraSb){ safeAlert('Configura Supabase primero.'); return; }
-    const email=$('aztra-login-email')?.value.trim();
-    const password=$('aztra-login-password')?.value;
-    if(!email || !password){ safeAlert('Coloca email y contraseña.'); return; }
-    const {data,error}=await aztraSb.auth.signInWithPassword({email,password});
-    if(error){ safeAlert('No se pudo iniciar sesión: '+error.message); return; }
-    aztraSession=data.session;
-    await ensureProfile();
-    updateSessionUI();
-    applyRolePermissions();
-    await loadProfiles();
-    window.aztraCloseAuthModal();
-    safeAlert('Sesión iniciada.');
+    const btn=$('aztra-login-submit');
+    const originalText=btn?.textContent || 'Ingresar';
+    try{
+      if(btn){btn.disabled=true;btn.textContent='Ingresando...';btn.setAttribute('aria-busy','true');}
+      initClient();
+      if(!aztraSb){ safeAlert('Configura Supabase primero.'); return; }
+      const email=$('aztra-login-email')?.value.trim();
+      const password=$('aztra-login-password')?.value;
+      if(!email || !password){ safeAlert('Coloca email y contraseña.'); return; }
+      const {data,error}=await aztraSb.auth.signInWithPassword({email,password});
+      if(error){ safeAlert('No se pudo iniciar sesión: '+error.message); return; }
+      aztraSession=data.session;
+      await ensureProfile();
+      updateSessionUI();
+      applyRolePermissions();
+      if(roleIsAdmin()) await loadProfiles();
+      else renderOwnProfile();
+      window.aztraCloseAuthModal();
+      safeAlert('Sesión iniciada.');
+    }finally{
+      if(btn){btn.disabled=false;btn.textContent=originalText;btn.removeAttribute('aria-busy');}
+    }
   };
 
   window.aztraSignOut=async function(){
@@ -15192,8 +15177,39 @@ function applyLuminarThemePreset(name){
       .trim();
   }
 
+  function isDefaultContentItem(item){
+    const title=String(item?.title ?? item?.titulo ?? '').trim();
+    const status=String(item?.status ?? item?.estado ?? '').trim();
+    if(title==='Nuevo contenido' && status==='Idea') return true;
+
+    const objective=String(item?.objective ?? item?.objetivo ?? '').trim();
+    const network=String(item?.network ?? item?.red ?? '').trim();
+    const type=String(item?.type ?? item?.tipo ?? '').trim();
+    const format=String(item?.format ?? item?.formato ?? '').trim();
+    const category=String(item?.category ?? item?.categoria ?? '').trim();
+    const scriptId=String(item?.scriptId ?? '').trim();
+    const refs=String(item?.refs ?? '').trim();
+    const metrics=item?.metrics && typeof item.metrics==='object' ? item.metrics : {};
+    const emptyMetrics=Object.values(metrics).every(v=>Number(v||0)===0);
+
+    return status==='Idea'
+      && title==='Nuevo contenido'
+      && objective==='VALOR'
+      && network==='instagram'
+      && type==='Reel'
+      && format==='Reel'
+      && category==='Historia Curiosa o Biografía'
+      && !scriptId
+      && !refs
+      && emptyMetrics;
+  }
+
+  function getRealItems(){
+    return getItems().filter(item=>!isDefaultContentItem(item));
+  }
+
   function buildRows(){
-    const items=getItems();
+    const items=getRealItems();
     if(!items.length){
       return '<tr><td colspan="8" class="empty">No hay contenido registrado.</td></tr>';
     }
@@ -15296,475 +15312,6 @@ th:nth-child(8),td:nth-child(8){width:20%}
 <div class="footer">Aztra OS — Plan de Contenido</div>
 </main>
 
-
-<script id="aztra-critical-final-fixes-auth-clock-pdf-v2">
-/* ==========================================================
-   AZTRA OS — FIX FINAL CRÍTICO
-   1) Auth: iniciar/cerrar sesión y cargar usuarios con sesión real.
-   2) Reloj: actualización cada segundo.
-   3) PDF Plan: formato de 10 columnas como referencia del usuario.
-   Este bloque se ejecuta al final para sobrescribir funciones antiguas.
-   ========================================================== */
-(function(){
-  'use strict';
-
-  const CONFIG_KEY = 'aztraSupabaseAccessConfig_v1';
-  const STORAGE_KEY = 'aztra-os-auth-session-final';
-
-  function $(id){ return document.getElementById(id); }
-
-  function esc(v){
-    return String(v ?? '')
-      .replace(/&/g,'&amp;')
-      .replace(/</g,'&lt;')
-      .replace(/>/g,'&gt;')
-      .replace(/"/g,'&quot;')
-      .replace(/'/g,'&#039;');
-  }
-
-  function msg(text){
-    try{
-      if(typeof window.showLuminarPopup === 'function') window.showLuminarPopup(text);
-      else alert(text);
-    }catch(e){ console.log('[AZTRA]', text); }
-  }
-
-  function readConfig(){
-    let saved = {};
-    try{ saved = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}') || {}; }catch(e){ saved = {}; }
-    const globalUrl = (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : '');
-    const globalKey = (typeof SUPABASE_KEY !== 'undefined' ? SUPABASE_KEY : '');
-    const url = (saved.url || globalUrl || '').trim();
-    const key = (saved.key || globalKey || '').trim();
-    return {url, key};
-  }
-
-  function getClient(){
-    const cfg = readConfig();
-    if(!cfg.url || !cfg.key || !window.supabase) return null;
-    const current = window.aztraSupabase;
-    if(current && current.__aztraFinalClient) return current;
-    try{
-      const client = window.supabase.createClient(cfg.url, cfg.key, {
-        auth:{
-          persistSession:true,
-          autoRefreshToken:true,
-          detectSessionInUrl:true,
-          storageKey:STORAGE_KEY
-        }
-      });
-      client.__aztraFinalClient = true;
-      window.aztraSupabase = client;
-      return client;
-    }catch(e){
-      console.error('AZTRA Auth client error:', e);
-      return null;
-    }
-  }
-
-  async function getSession(){
-    const sb = getClient();
-    if(!sb) return null;
-    const {data, error} = await sb.auth.getSession();
-    if(error) console.warn('AZTRA getSession error:', error);
-    return data?.session || null;
-  }
-
-  async function getProfile(session){
-    const sb = getClient();
-    const user = session?.user;
-    if(!sb || !user) return null;
-    const {data, error} = await sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
-    if(error){
-      console.warn('AZTRA profile select error:', error);
-      return null;
-    }
-    return data || null;
-  }
-
-  function isOwnerOrAdmin(profile){
-    const role = String(profile?.role || '').toLowerCase();
-    return role === 'owner' || role === 'admin';
-  }
-
-  function renderSessionUI(session, profile){
-    const pill = $('aztra-auth-status-pill');
-    const name = $('aztra-current-user-name');
-    const email = $('aztra-current-user-email');
-    const role = $('aztra-current-user-role');
-
-    if(session?.user){
-      if(pill) pill.textContent = 'Conectado';
-      if(name) name.textContent = profile?.full_name || session.user.user_metadata?.full_name || session.user.email || 'Usuario';
-      if(email) email.textContent = session.user.email || '';
-      if(role) role.textContent = profile?.role || 'viewer';
-      document.body.dataset.aztraRole = String(profile?.role || 'viewer').toLowerCase();
-      const topName = $('profile-name');
-      if(topName) topName.textContent = (profile?.full_name || session.user.email || 'Usuario').split('@')[0].split(' ')[0] || 'Usuario';
-    }else{
-      if(pill) pill.textContent = getClient() ? 'Sin sesión' : 'Modo local';
-      if(name) name.textContent = 'Sin sesión';
-      if(email) email.textContent = getClient() ? 'Inicia sesión para sincronizar permisos.' : 'Configura Supabase para activar Auth.';
-      if(role) role.textContent = 'local';
-      document.body.dataset.aztraRole = 'local';
-    }
-  }
-
-  function renderUsers(rows, profile){
-    const body = $('aztra-users-table-body');
-    if(!body) return;
-    if(!Array.isArray(rows) || !rows.length){
-      body.innerHTML = '<tr><td colspan="6">No hay usuarios registrados.</td></tr>';
-      return;
-    }
-    body.innerHTML = rows.map(p => `
-      <tr>
-        <td>${esc(p.full_name || '—')}</td>
-        <td>${esc(p.email || '—')}</td>
-        <td>${esc(p.cargo || '—')}</td>
-        <td><span class="aztra-role-chip">${esc(p.role || 'viewer')}</span></td>
-        <td>${p.active ? 'Activo' : 'Inactivo'}</td>
-        <td>${esc(Array.isArray(p.client_scope) ? p.client_scope.join(', ') : (p.client_scope || '—'))}</td>
-      </tr>`).join('');
-  }
-
-  async function refreshAuthUI(){
-    const session = await getSession();
-    const profile = session ? await getProfile(session) : null;
-    renderSessionUI(session, profile);
-    return {session, profile};
-  }
-
-  window.aztraOpenAuthModal = function(){
-    let modal = $('aztra-auth-backdrop');
-    if(!modal){
-      modal = document.createElement('div');
-      modal.id = 'aztra-auth-backdrop';
-      modal.className = 'aztra-auth-backdrop';
-      document.body.appendChild(modal);
-    }
-    modal.innerHTML = `
-      <div class="aztra-auth-modal" role="dialog" aria-modal="true">
-        <button type="button" class="aztra-auth-close" id="aztra-login-close">×</button>
-        <h2>Acceso Aztra OS</h2>
-        <p>Inicia sesión para cargar usuarios, roles y permisos.</p>
-        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" type="email" autocomplete="email" placeholder="usuario@empresa.com"></div>
-        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" type="password" autocomplete="current-password" placeholder="Contraseña"></div>
-        <div class="aztra-access-actions">
-          <button type="button" class="btn-primary" id="aztra-login-submit">Ingresar</button>
-          <button type="button" class="btn" id="aztra-login-cancel">Cancelar</button>
-        </div>
-        <small id="aztra-login-status" class="muted" style="display:block;margin-top:10px;"></small>
-      </div>`;
-
-    modal.classList.add('active');
-    const email = $('aztra-login-email');
-    const pass = $('aztra-login-password');
-    const close = () => window.aztraCloseAuthModal();
-    $('aztra-login-close')?.addEventListener('click', close);
-    $('aztra-login-cancel')?.addEventListener('click', close);
-    $('aztra-login-submit')?.addEventListener('click', () => window.aztraSignIn());
-    [email, pass].forEach(input => input?.addEventListener('keydown', ev => {
-      if(ev.key === 'Enter'){
-        ev.preventDefault();
-        window.aztraSignIn();
-      }
-    }));
-    setTimeout(() => email?.focus(), 80);
-  };
-
-  window.aztraCloseAuthModal = function(){
-    $('aztra-auth-backdrop')?.classList.remove('active');
-  };
-
-  window.aztraSignIn = async function(){
-    const sb = getClient();
-    const status = $('aztra-login-status');
-    if(!sb){ msg('Falta configurar Supabase URL y anon/public key.'); return; }
-    const email = $('aztra-login-email')?.value.trim();
-    const password = $('aztra-login-password')?.value || '';
-    if(!email || !password){ msg('Coloca email y contraseña.'); return; }
-    if(status) status.textContent = 'Iniciando sesión...';
-
-    const {data, error} = await sb.auth.signInWithPassword({email, password});
-    if(error){
-      if(status) status.textContent = 'Error: ' + error.message;
-      msg('No se pudo iniciar sesión: ' + error.message);
-      return;
-    }
-
-    const session = data?.session || await getSession();
-    const profile = await getProfile(session);
-    renderSessionUI(session, profile);
-    window.aztraCloseAuthModal();
-    await window.aztraLoadProfiles();
-    msg('Sesión iniciada correctamente.');
-  };
-
-  window.aztraSignOut = async function(){
-    const sb = getClient();
-    if(sb){
-      try{ await sb.auth.signOut(); }catch(e){ console.warn('AZTRA signOut error:', e); }
-    }
-    renderSessionUI(null, null);
-    const body = $('aztra-users-table-body');
-    if(body) body.innerHTML = '<tr><td colspan="6">Sesión cerrada. Inicia sesión para cargar perfiles.</td></tr>';
-    msg('Sesión cerrada.');
-  };
-
-  window.aztraLoadProfiles = async function(){
-    const sb = getClient();
-    const body = $('aztra-users-table-body');
-    if(!sb){
-      if(body) body.innerHTML = '<tr><td colspan="6">Falta configurar Supabase.</td></tr>';
-      msg('Falta configurar Supabase.');
-      return;
-    }
-
-    const session = await getSession();
-    if(!session?.user){
-      if(body) body.innerHTML = '<tr><td colspan="6">Inicia sesión primero para cargar usuarios.</td></tr>';
-      window.aztraOpenAuthModal();
-      return;
-    }
-
-    const profile = await getProfile(session);
-    renderSessionUI(session, profile);
-    if(!isOwnerOrAdmin(profile)){
-      renderUsers(profile ? [profile] : [], profile);
-      msg('Tu sesión está activa, pero solo Owner/Admin puede ver todos los usuarios.');
-      return;
-    }
-
-    if(body) body.innerHTML = '<tr><td colspan="6">Cargando usuarios...</td></tr>';
-    const {data, error} = await sb.from('profiles').select('*').order('created_at', {ascending:false});
-    if(error){
-      console.error('AZTRA profiles load error:', error);
-      if(body) body.innerHTML = `<tr><td colspan="6">No se pudo cargar usuarios: ${esc(error.message)}</td></tr>`;
-      return;
-    }
-    renderUsers(data || [], profile);
-  };
-
-  window.aztraTestSupabaseAccess = async function(){
-    const sb = getClient();
-    if(!sb){ msg('Falta configurar Supabase.'); return; }
-    const session = await getSession();
-    msg(session?.user ? 'Conectado con sesión activa.' : 'Conectado a Supabase. Falta iniciar sesión.');
-  };
-
-  window.aztraSaveSupabaseAccessConfig = function(){
-    const url = $('aztra-supabase-url')?.value.trim() || '';
-    const key = $('aztra-supabase-key')?.value.trim() || '';
-    if(url && key) localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key}));
-    window.aztraSupabase = null;
-    getClient();
-    refreshAuthUI();
-    msg('Conexión guardada. Ahora inicia sesión.');
-  };
-
-  /* ---------------- Reloj vivo ---------------- */
-  function pad(n){ return String(n).padStart(2,'0'); }
-  function updateClock(){
-    const now = new Date();
-    const months = ['ENERO','FEBRERO','MARZO','ABRIL','MAYO','JUNIO','JULIO','AGOSTO','SETIEMBRE','OCTUBRE','NOVIEMBRE','DICIEMBRE'];
-    const weekdays = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-    const h24 = now.getHours();
-    const suffix = h24 >= 12 ? 'PM' : 'AM';
-    const h12 = h24 % 12 || 12;
-    const time = `${pad(h12)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-
-    if($('dash-day-number')) $('dash-day-number').textContent = now.getDate();
-    if($('dash-month-year')) $('dash-month-year').textContent = `${months[now.getMonth()]} DE ${now.getFullYear()}`;
-    if($('dash-weekday')) $('dash-weekday').textContent = weekdays[now.getDay()];
-    if($('dash-current-time')) $('dash-current-time').innerHTML = `${time} <small style="font-size:.65em;color:#46dfff">${suffix}</small>`;
-
-    document.querySelectorAll('.time-text').forEach(el => { if(el.id !== 'dash-current-time') el.textContent = `${time} ${suffix}`; });
-    document.querySelectorAll('.date-text').forEach(el => { el.textContent = `${weekdays[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()].toLowerCase()} de ${now.getFullYear()}`; });
-  }
-  window.aztraUpdateLiveClock = updateClock;
-  if(window.__aztraClockInterval) clearInterval(window.__aztraClockInterval);
-  updateClock();
-  window.__aztraClockInterval = setInterval(updateClock, 1000);
-
-  /* ---------------- PDF 10 columnas ---------------- */
-  function getItems(){
-    try{ if(typeof window.currentItems === 'function') return window.currentItems() || []; }catch(e){}
-    try{
-      if(Array.isArray(window.contentItems)) return window.contentItems;
-      if(typeof contentItems !== 'undefined' && Array.isArray(contentItems)) return contentItems;
-    }catch(e){}
-    return [];
-  }
-
-  function getScripts(){
-    try{
-      if(Array.isArray(window.scripts)) return window.scripts;
-      if(typeof scripts !== 'undefined' && Array.isArray(scripts)) return scripts;
-    }catch(e){}
-    return [];
-  }
-
-  function getContextValue(key, fallback){
-    try{ if(window.context && window.context[key]) return window.context[key]; }catch(e){}
-    try{ if(typeof context !== 'undefined' && context[key]) return context[key]; }catch(e){}
-    return fallback;
-  }
-
-  function clientName(){
-    const val = getContextValue('client','');
-    if(val) return val;
-    for(const id of ['ctx-client','content-client','plan-client','cal-content-client']){
-      const el = $(id);
-      if(!el) continue;
-      if(el.tagName === 'SELECT') return el.options[el.selectedIndex]?.textContent?.trim() || el.value || '';
-      if(el.value) return el.value.trim();
-    }
-    return '—';
-  }
-
-  function periodText(){
-    const month = getContextValue('month','');
-    const year = getContextValue('year','');
-    if(month || year) return `${month} ${year}`.trim();
-    return '—';
-  }
-
-  function networkLabel(v){
-    try{ if(typeof window.redLabel === 'function') return window.redLabel(v); }catch(e){}
-    const map = {instagram:'📸 IG', tiktok:'🎵 TK', facebook:'FB', blog:'Blog', ig_tk:'IG/TK'};
-    return map[v] || v || '—';
-  }
-
-  function formatLabelSafe(v){
-    try{ if(typeof window.formatLabel === 'function') return window.formatLabel(v); }catch(e){}
-    const map = {Reel:'🎬 REEL', Carrusel:'🧩 CAR', Post:'POST', AD:'AD'};
-    return map[v] || v || '—';
-  }
-
-  function scriptStatus(item){
-    const list = getScripts();
-    const s = list.find(x => x.id && x.id === item.scriptId);
-    return s?.status || item.guion || item.scriptStatus || 'Sin guion';
-  }
-
-  function buildRows(){
-    const rows = getItems();
-    if(!rows.length) return '<tr><td colspan="10" class="empty">Sin contenidos para este periodo.</td></tr>';
-    return rows.map((i, idx) => `
-      <tr>
-        <td class="center">${idx+1}</td>
-        <td>${esc(i.date || '')}</td>
-        <td>${esc((i.time || '') + (i.ampm ? ' ' + String(i.ampm).split(' ')[0] : ''))}</td>
-        <td>${esc(networkLabel(i.network))}</td>
-        <td>${esc(i.objective || '')}</td>
-        <td>${esc(i.type || i.contentType || '')}</td>
-        <td>${esc(formatLabelSafe(i.format || ''))}</td>
-        <td>${esc(i.title || '')}</td>
-        <td>${esc(i.category || '')}</td>
-        <td>${esc(scriptStatus(i))}</td>
-      </tr>`).join('');
-  }
-
-  function printHTML(){
-    return `<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<title>Plan de Contenido</title>
-<style>
-@page{size:A4 landscape;margin:12mm 11mm;}
-*{box-sizing:border-box;}
-html,body{margin:0;padding:0;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif;}
-main{width:100%;}
-h1{font-size:20pt;margin:0 0 4px 0;line-height:1.05;font-weight:800;color:#000;}
-.meta{font-size:10.5pt;margin:0 0 14px 0;line-height:1.3;}
-.meta strong{font-weight:700;}
-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8.3pt;}
-th,td{border:1px solid #000;padding:6px 5px;vertical-align:middle;line-height:1.15;color:#111;background:#fff;overflow-wrap:anywhere;word-break:normal;}
-th{font-weight:700;text-align:center;background:#f4f4f4;color:#000;}
-thead{display:table-header-group;}
-tr{page-break-inside:avoid;}
-.center{text-align:center;}
-.empty{text-align:center;padding:14px;color:#555;}
-th:nth-child(1),td:nth-child(1){width:4%;}
-th:nth-child(2),td:nth-child(2){width:10%;}
-th:nth-child(3),td:nth-child(3){width:8%;}
-th:nth-child(4),td:nth-child(4){width:8%;}
-th:nth-child(5),td:nth-child(5){width:10%;}
-th:nth-child(6),td:nth-child(6){width:11%;}
-th:nth-child(7),td:nth-child(7){width:9%;}
-th:nth-child(8),td:nth-child(8){width:18%;}
-th:nth-child(9),td:nth-child(9){width:14%;}
-th:nth-child(10),td:nth-child(10){width:8%;}
-@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
-</style>
-</head>
-<body>
-<main>
-  <h1>Plan de Contenido</h1>
-  <div class="meta"><strong>Cliente:</strong> ${esc(clientName())} &nbsp; <strong>Periodo:</strong> ${esc(periodText())}</div>
-  <table>
-    <thead>
-      <tr>
-        <th>N°</th>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Red</th>
-        <th>Objetivo</th>
-        <th>Tipo de<br>contenido</th>
-        <th>Formato</th>
-        <th>Título</th>
-        <th>Categoría</th>
-        <th>Guion</th>
-      </tr>
-    </thead>
-    <tbody>${buildRows()}</tbody>
-  </table>
-</main>
-</body>
-</html>`;
-  }
-
-  window.buildPrintPlan = function(){
-    const mount = $('print-plan');
-    if(!mount) return;
-    mount.innerHTML = `<h1>Plan de Contenido</h1><p style="font-size:12pt"><b>Cliente:</b> ${esc(clientName())} &nbsp; <b>Periodo:</b> ${esc(periodText())}</p><br><table class="print-table"><thead><tr><th>N°</th><th>Fecha</th><th>Hora</th><th>Red</th><th>Objetivo</th><th>Tipo de contenido</th><th>Formato</th><th>Título</th><th>Categoría</th><th>Guion</th></tr></thead><tbody>${buildRows()}</tbody></table>`;
-  };
-
-  window.exportarPlanContenidoPDF = function(){
-    const printWindow = window.open('', '_blank', 'width=1200,height=800');
-    if(!printWindow){
-      alert('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para exportar el PDF.');
-      return;
-    }
-    printWindow.document.open();
-    printWindow.document.write(printHTML());
-    printWindow.document.close();
-    const doPrint = function(){
-      try{ printWindow.focus(); printWindow.print(); }catch(e){ console.warn(e); }
-    };
-    printWindow.onload = function(){ setTimeout(doPrint, 250); };
-    setTimeout(doPrint, 800);
-  };
-
-  function boot(){
-    const sb = getClient();
-    if(sb){
-      sb.auth.onAuthStateChange(async function(_event, session){
-        const profile = session ? await getProfile(session) : null;
-        renderSessionUI(session, profile);
-      });
-    }
-    refreshAuthUI();
-    updateClock();
-    try{ window.buildPrintPlan(); }catch(e){}
-  }
-
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
-})();
-</script>
 
 </body>
 </html>`;
@@ -16253,19 +15800,22 @@ th:nth-child(10),td:nth-child(10){width:8%;}
 
 
 
-<script id="aztra-critical-final-fixes-auth-clock-pdf-v2">
+<script id="aztra-critical-final-fixes-auth-clock-pdf-v3">
 /* ==========================================================
-   AZTRA OS — FIX FINAL CRÍTICO
-   1) Auth: iniciar/cerrar sesión y cargar usuarios con sesión real.
-   2) Reloj: actualización cada segundo.
-   3) PDF Plan: formato de 10 columnas como referencia del usuario.
-   Este bloque se ejecuta al final para sobrescribir funciones antiguas.
+   AZTRA OS — FIX FINAL CRÍTICO v3
+   A) PDF: filtra items vacíos/default antes de construir filas.
+   B) Reloj: deja un único intervalo activo para fecha/hora del dashboard.
+   C) Login: botón con estado "Ingresando..." y bloqueo anti doble clic.
+   D) Login: solo carga perfiles completos si el rol es Owner/Admin.
+   E) Login: inputs con name/autocomplete correctos.
+   F) Login: Enter envía email y contraseña.
    ========================================================== */
 (function(){
   'use strict';
 
   const CONFIG_KEY = 'aztraSupabaseAccessConfig_v1';
   const STORAGE_KEY = 'aztra-os-auth-session-final';
+  let signingIn = false;
 
   function $(id){ return document.getElementById(id); }
 
@@ -16290,9 +15840,10 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     try{ saved = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}') || {}; }catch(e){ saved = {}; }
     const globalUrl = (typeof SUPABASE_URL !== 'undefined' ? SUPABASE_URL : '');
     const globalKey = (typeof SUPABASE_KEY !== 'undefined' ? SUPABASE_KEY : '');
-    const url = (saved.url || globalUrl || '').trim();
-    const key = (saved.key || globalKey || '').trim();
-    return {url, key};
+    return {
+      url:(saved.url || globalUrl || '').trim(),
+      key:(saved.key || globalKey || '').trim()
+    };
   }
 
   function getClient(){
@@ -16338,7 +15889,7 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     return data || null;
   }
 
-  function isOwnerOrAdmin(profile){
+  function roleIsAdmin(profile){
     const role = String(profile?.role || '').toLowerCase();
     return role === 'owner' || role === 'admin';
   }
@@ -16348,15 +15899,17 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     const name = $('aztra-current-user-name');
     const email = $('aztra-current-user-email');
     const role = $('aztra-current-user-role');
+    const profileName = profile?.full_name || session?.user?.user_metadata?.full_name || session?.user?.email || 'Usuario';
+    const profileRole = profile?.role || 'viewer';
 
     if(session?.user){
       if(pill) pill.textContent = 'Conectado';
-      if(name) name.textContent = profile?.full_name || session.user.user_metadata?.full_name || session.user.email || 'Usuario';
+      if(name) name.textContent = profileName;
       if(email) email.textContent = session.user.email || '';
-      if(role) role.textContent = profile?.role || 'viewer';
-      document.body.dataset.aztraRole = String(profile?.role || 'viewer').toLowerCase();
+      if(role) role.textContent = profileRole;
+      document.body.dataset.aztraRole = String(profileRole).toLowerCase();
       const topName = $('profile-name');
-      if(topName) topName.textContent = (profile?.full_name || session.user.email || 'Usuario').split('@')[0].split(' ')[0] || 'Usuario';
+      if(topName) topName.textContent = profileName.split('@')[0].split(' ')[0] || 'Usuario';
     }else{
       if(pill) pill.textContent = getClient() ? 'Sin sesión' : 'Modo local';
       if(name) name.textContent = 'Sin sesión';
@@ -16366,7 +15919,20 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     }
   }
 
-  function renderUsers(rows, profile){
+  function profileRowFromSession(session, profile){
+    if(profile) return profile;
+    if(!session?.user) return null;
+    return {
+      full_name:session.user.user_metadata?.full_name || 'Usuario',
+      email:session.user.email || '—',
+      cargo:session.user.user_metadata?.cargo || '—',
+      role:session.user.user_metadata?.role || 'viewer',
+      active:true,
+      client_scope:session.user.user_metadata?.client_scope ? [session.user.user_metadata.client_scope] : []
+    };
+  }
+
+  function renderProfiles(rows){
     const body = $('aztra-users-table-body');
     if(!body) return;
     if(!Array.isArray(rows) || !rows.length){
@@ -16384,10 +15950,23 @@ th:nth-child(10),td:nth-child(10){width:8%;}
       </tr>`).join('');
   }
 
+  function renderOwnProfile(session, profile){
+    const row = profileRowFromSession(session, profile);
+    if(row) renderProfiles([row]);
+    else {
+      const body = $('aztra-users-table-body');
+      if(body) body.innerHTML = '<tr><td colspan="6">Inicia sesión para ver tu perfil.</td></tr>';
+    }
+  }
+
   async function refreshAuthUI(){
     const session = await getSession();
     const profile = session ? await getProfile(session) : null;
     renderSessionUI(session, profile);
+    if(session?.user){
+      if(roleIsAdmin(profile)) await window.aztraLoadProfiles();
+      else renderOwnProfile(session, profile);
+    }
     return {session, profile};
   }
 
@@ -16404,8 +15983,8 @@ th:nth-child(10),td:nth-child(10){width:8%;}
         <button type="button" class="aztra-auth-close" id="aztra-login-close">×</button>
         <h2>Acceso Aztra OS</h2>
         <p>Inicia sesión para cargar usuarios, roles y permisos.</p>
-        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" type="email" autocomplete="email" placeholder="usuario@empresa.com"></div>
-        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" type="password" autocomplete="current-password" placeholder="Contraseña"></div>
+        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" name="email" type="email" autocomplete="email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" name="password" type="password" autocomplete="current-password" placeholder="Contraseña"></div>
         <div class="aztra-access-actions">
           <button type="button" class="btn-primary" id="aztra-login-submit">Ingresar</button>
           <button type="button" class="btn" id="aztra-login-cancel">Cancelar</button>
@@ -16416,16 +15995,20 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     modal.classList.add('active');
     const email = $('aztra-login-email');
     const pass = $('aztra-login-password');
+    const submit = $('aztra-login-submit');
     const close = () => window.aztraCloseAuthModal();
-    $('aztra-login-close')?.addEventListener('click', close);
-    $('aztra-login-cancel')?.addEventListener('click', close);
-    $('aztra-login-submit')?.addEventListener('click', () => window.aztraSignIn());
-    [email, pass].forEach(input => input?.addEventListener('keydown', ev => {
+    const onEnter = ev => {
       if(ev.key === 'Enter'){
         ev.preventDefault();
         window.aztraSignIn();
       }
-    }));
+    };
+
+    $('aztra-login-close')?.addEventListener('click', close);
+    $('aztra-login-cancel')?.addEventListener('click', close);
+    submit?.addEventListener('click', () => window.aztraSignIn());
+    email?.addEventListener('keydown', onEnter);
+    pass?.addEventListener('keydown', onEnter);
     setTimeout(() => email?.focus(), 80);
   };
 
@@ -16434,27 +16017,48 @@ th:nth-child(10),td:nth-child(10){width:8%;}
   };
 
   window.aztraSignIn = async function(){
+    if(signingIn) return;
     const sb = getClient();
     const status = $('aztra-login-status');
-    if(!sb){ msg('Falta configurar Supabase URL y anon/public key.'); return; }
-    const email = $('aztra-login-email')?.value.trim();
-    const password = $('aztra-login-password')?.value || '';
-    if(!email || !password){ msg('Coloca email y contraseña.'); return; }
-    if(status) status.textContent = 'Iniciando sesión...';
+    const btn = $('aztra-login-submit');
+    const originalText = btn?.textContent || 'Ingresar';
 
-    const {data, error} = await sb.auth.signInWithPassword({email, password});
-    if(error){
-      if(status) status.textContent = 'Error: ' + error.message;
-      msg('No se pudo iniciar sesión: ' + error.message);
-      return;
+    try{
+      signingIn = true;
+      if(btn){
+        btn.disabled = true;
+        btn.textContent = 'Ingresando...';
+        btn.setAttribute('aria-busy','true');
+      }
+
+      if(!sb){ msg('Falta configurar Supabase URL y anon/public key.'); return; }
+      const email = $('aztra-login-email')?.value.trim();
+      const password = $('aztra-login-password')?.value || '';
+      if(!email || !password){ msg('Coloca email y contraseña.'); return; }
+      if(status) status.textContent = 'Ingresando...';
+
+      const {data, error} = await sb.auth.signInWithPassword({email, password});
+      if(error){
+        if(status) status.textContent = 'Error: ' + error.message;
+        msg('No se pudo iniciar sesión: ' + error.message);
+        return;
+      }
+
+      const session = data?.session || await getSession();
+      const profile = await getProfile(session);
+      renderSessionUI(session, profile);
+      if(roleIsAdmin(profile)) await window.aztraLoadProfiles();
+      else renderOwnProfile(session, profile);
+      window.aztraCloseAuthModal();
+      msg('Sesión iniciada correctamente.');
+    }finally{
+      signingIn = false;
+      if(btn){
+        btn.disabled = false;
+        btn.textContent = originalText || 'Ingresar';
+        btn.removeAttribute('aria-busy');
+      }
     }
-
-    const session = data?.session || await getSession();
-    const profile = await getProfile(session);
-    renderSessionUI(session, profile);
-    window.aztraCloseAuthModal();
-    await window.aztraLoadProfiles();
-    msg('Sesión iniciada correctamente.');
   };
 
   window.aztraSignOut = async function(){
@@ -16486,9 +16090,8 @@ th:nth-child(10),td:nth-child(10){width:8%;}
 
     const profile = await getProfile(session);
     renderSessionUI(session, profile);
-    if(!isOwnerOrAdmin(profile)){
-      renderUsers(profile ? [profile] : [], profile);
-      msg('Tu sesión está activa, pero solo Owner/Admin puede ver todos los usuarios.');
+    if(!roleIsAdmin(profile)){
+      renderOwnProfile(session, profile);
       return;
     }
 
@@ -16499,7 +16102,7 @@ th:nth-child(10),td:nth-child(10){width:8%;}
       if(body) body.innerHTML = `<tr><td colspan="6">No se pudo cargar usuarios: ${esc(error.message)}</td></tr>`;
       return;
     }
-    renderUsers(data || [], profile);
+    renderProfiles(data || []);
   };
 
   window.aztraTestSupabaseAccess = async function(){
@@ -16519,7 +16122,7 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     msg('Conexión guardada. Ahora inicia sesión.');
   };
 
-  /* ---------------- Reloj vivo ---------------- */
+  /* ---------------- Reloj vivo único ---------------- */
   function pad(n){ return String(n).padStart(2,'0'); }
   function updateClock(){
     const now = new Date();
@@ -16530,27 +16133,67 @@ th:nth-child(10),td:nth-child(10){width:8%;}
     const h12 = h24 % 12 || 12;
     const time = `${pad(h12)}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
 
-    if($('dash-day-number')) $('dash-day-number').textContent = now.getDate();
+    if($('dash-day-number')) $('dash-day-number').textContent = pad(now.getDate());
     if($('dash-month-year')) $('dash-month-year').textContent = `${months[now.getMonth()]} DE ${now.getFullYear()}`;
     if($('dash-weekday')) $('dash-weekday').textContent = weekdays[now.getDay()];
     if($('dash-current-time')) $('dash-current-time').innerHTML = `${time} <small style="font-size:.65em;color:#46dfff">${suffix}</small>`;
 
-    document.querySelectorAll('.time-text').forEach(el => { if(el.id !== 'dash-current-time') el.textContent = `${time} ${suffix}`; });
-    document.querySelectorAll('.date-text').forEach(el => { el.textContent = `${weekdays[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()].toLowerCase()} de ${now.getFullYear()}`; });
+    document.querySelectorAll('.time-text').forEach(el => {
+      if(el.id !== 'dash-current-time') el.textContent = `${time} ${suffix}`;
+    });
+    document.querySelectorAll('.date-text').forEach(el => {
+      el.textContent = `${weekdays[now.getDay()]}, ${now.getDate()} de ${months[now.getMonth()].toLowerCase()} de ${now.getFullYear()}`;
+    });
   }
   window.aztraUpdateLiveClock = updateClock;
-  if(window.__aztraClockInterval) clearInterval(window.__aztraClockInterval);
-  updateClock();
-  window.__aztraClockInterval = setInterval(updateClock, 1000);
 
-  /* ---------------- PDF 10 columnas ---------------- */
-  function getItems(){
+  function startSingleClock(){
+    if(window.__luminarClock){ clearInterval(window.__luminarClock); window.__luminarClock = null; }
+    if(window.__luminarDateClockRefuerzoFinal){ clearInterval(window.__luminarDateClockRefuerzoFinal); window.__luminarDateClockRefuerzoFinal = null; }
+    if(window.__aztraClockInterval){ clearInterval(window.__aztraClockInterval); window.__aztraClockInterval = null; }
+    updateClock();
+    window.__aztraClockInterval = setInterval(updateClock, 1000);
+  }
+
+  /* ---------------- PDF Plan filtrado ---------------- */
+  function rawItems(){
     try{ if(typeof window.currentItems === 'function') return window.currentItems() || []; }catch(e){}
     try{
       if(Array.isArray(window.contentItems)) return window.contentItems;
       if(typeof contentItems !== 'undefined' && Array.isArray(contentItems)) return contentItems;
     }catch(e){}
     return [];
+  }
+
+  function isDefaultContentItem(item){
+    const title = String(item?.title ?? item?.titulo ?? '').trim();
+    const status = String(item?.status ?? item?.estado ?? '').trim();
+    if(title === 'Nuevo contenido' && status === 'Idea') return true;
+
+    const objective = String(item?.objective ?? item?.objetivo ?? '').trim();
+    const network = String(item?.network ?? item?.red ?? '').trim();
+    const type = String(item?.type ?? item?.tipo ?? '').trim();
+    const format = String(item?.format ?? item?.formato ?? '').trim();
+    const category = String(item?.category ?? item?.categoria ?? '').trim();
+    const scriptId = String(item?.scriptId ?? '').trim();
+    const refs = String(item?.refs ?? '').trim();
+    const metrics = item?.metrics && typeof item.metrics === 'object' ? item.metrics : {};
+    const emptyMetrics = Object.values(metrics).every(v => Number(v || 0) === 0);
+
+    return status === 'Idea'
+      && title === 'Nuevo contenido'
+      && objective === 'VALOR'
+      && network === 'instagram'
+      && type === 'Reel'
+      && format === 'Reel'
+      && category === 'Historia Curiosa o Biografía'
+      && !scriptId
+      && !refs
+      && emptyMetrics;
+  }
+
+  function getRealItems(){
+    return rawItems().filter(item => !isDefaultContentItem(item));
   }
 
   function getScripts(){
@@ -16605,8 +16248,8 @@ th:nth-child(10),td:nth-child(10){width:8%;}
   }
 
   function buildRows(){
-    const rows = getItems();
-    if(!rows.length) return '<tr><td colspan="10" class="empty">Sin contenidos para este periodo.</td></tr>';
+    const rows = getRealItems();
+    if(!rows.length) return '<tr><td colspan="10" class="empty">No hay contenido registrado.</td></tr>';
     return rows.map((i, idx) => `
       <tr>
         <td class="center">${idx+1}</td>
@@ -16710,10 +16353,14 @@ th:nth-child(10),td:nth-child(10){width:8%;}
       sb.auth.onAuthStateChange(async function(_event, session){
         const profile = session ? await getProfile(session) : null;
         renderSessionUI(session, profile);
+        if(session?.user){
+          if(roleIsAdmin(profile)) await window.aztraLoadProfiles();
+          else renderOwnProfile(session, profile);
+        }
       });
     }
     refreshAuthUI();
-    updateClock();
+    startSingleClock();
     try{ window.buildPrintPlan(); }catch(e){}
   }
 
