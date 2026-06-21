@@ -8028,6 +8028,48 @@ body[data-aztra-role="editor"] [data-permission="admin"]{
 .aztra-role-manager-card{margin-top:1rem}
 </style>
 
+
+<style id="aztra-owner-security-fix-css">
+.aztra-public-role-lock{display:grid;gap:.45rem;padding:.85rem;border-radius:16px;border:1px solid rgba(59,130,246,.30);background:rgba(59,130,246,.08);color:rgba(255,255,255,.86);margin:.75rem 0}
+.aztra-public-role-lock strong{color:#fff}
+.aztra-public-role-lock code{display:block;white-space:normal;overflow-wrap:anywhere;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:.65rem;color:#fff;font-size:.78rem;line-height:1.45}
+body:not([data-aztra-role="owner"]):not([data-aztra-role="admin"]) #aztra-new-user-role{pointer-events:none!important;opacity:.55!important}
+</style>
+
+
+<style id="aztra-auth-ux-final-fix-css">
+.aztra-role-public-display{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  width:100%;
+  min-height:44px;
+  border:1px solid color-mix(in srgb,var(--aztra-accent,#00f0ff) 24%, rgba(255,255,255,.10));
+  border-radius:14px;
+  background:rgba(0,0,0,.22);
+  color:#fff;
+  padding:.65rem .8rem;
+  font-weight:900;
+}
+.aztra-role-public-display small{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  font-weight:800;
+}
+.aztra-password-help{
+  display:grid;
+  gap:.35rem;
+  margin:.7rem 0;
+  padding:.8rem;
+  border-radius:16px;
+  border:1px solid rgba(34,197,94,.28);
+  background:rgba(34,197,94,.08);
+  color:rgba(255,255,255,.86);
+}
+.aztra-password-help strong{color:#fff}
+.aztra-password-help span{line-height:1.45}
+</style>
+
 </head>
 <body class="mode-macro">
 <div class="luminar-popup-backdrop" id="luminar-popup-backdrop"><div class="luminar-popup" id="luminar-popup-box"><h3>Luminar</h3><p id="luminar-popup-message"></p><button class="btn" onclick="closeLuminarPopup()">Aceptar</button></div></div>
@@ -16773,6 +16815,274 @@ th:nth-child(8),td:nth-child(8){width:20%}
 
   document.addEventListener('DOMContentLoaded',()=>{
     setTimeout(()=>{ try{ window.aztraLoadProfiles(); }catch(e){} },1200);
+  });
+})();
+</script>
+
+
+<script id="aztra-owner-security-fix-js">
+(function(){
+  const OWNER_EMAIL_KEY='aztraOwnerEmail_v1';
+  function $(id){return document.getElementById(id)}
+  function safeAlert(msg){try{if(typeof showLuminarPopup==='function')showLuminarPopup(msg);else alert(msg)}catch(e){console.log(msg)}}
+  function getSb(){
+    if(window.aztraSupabase)return window.aztraSupabase;
+    try{
+      const cfg=JSON.parse(localStorage.getItem('aztraSupabaseAccessConfig_v1')||'{}');
+      const url=cfg.url || (typeof SUPABASE_URL!=='undefined'?SUPABASE_URL:'');
+      const key=cfg.key || (typeof SUPABASE_KEY!=='undefined'?SUPABASE_KEY:'');
+      if(url && key && window.supabase){window.aztraSupabase=window.supabase.createClient(url,key);return window.aztraSupabase}
+    }catch(e){}
+    return null;
+  }
+  async function getSession(){const sb=getSb(); if(!sb)return null; const {data}=await sb.auth.getSession(); return data.session||null}
+  async function getMyProfile(){
+    const sb=getSb(), session=await getSession();
+    if(!sb||!session?.user)return null;
+    const {data}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+    return data||null;
+  }
+  function isAdmin(role){role=String(role||'').toLowerCase();return role==='owner'||role==='admin'}
+  async function currentCanAssignRoles(){const p=await getMyProfile();return isAdmin(p?.role)}
+
+  function addOwnerBootstrapUI(){
+    const card=document.querySelector('.aztra-access-panel .aztra-access-card');
+    if(!card || $('aztra-owner-bootstrap-ui'))return;
+    const saved=localStorage.getItem(OWNER_EMAIL_KEY)||'';
+    const box=document.createElement('div');
+    box.id='aztra-owner-bootstrap-ui';
+    box.className='aztra-public-role-lock';
+    box.innerHTML=`<strong>Administrador general</strong>
+      <span>Primero crea tu cuenta normal. Luego escribe tu correo y ejecuta el SQL en Supabase para convertirte en Owner.</span>
+      <input class="input" id="aztra-owner-email" type="email" placeholder="tu-correo@dominio.com" value="${saved}">
+      <button class="btn-primary" type="button" onclick="aztraShowOwnerBootstrapSQL()">Copiar SQL para hacerme Owner</button>`;
+    card.appendChild(box);
+  }
+  function addRoleNotice(){
+    const roleSelect=$('aztra-new-user-role');
+    if(!roleSelect || $('aztra-public-role-lock'))return;
+    const note=document.createElement('div');
+    note.id='aztra-public-role-lock';
+    note.className='aztra-public-role-lock';
+    note.innerHTML=`<strong>Seguridad de roles</strong><span>Las cuentas creadas desde el link público entran como <b>Viewer</b>. Solo Owner/Admin puede cambiar roles después.</span>`;
+    const field=roleSelect.closest('.field');
+    if(field)field.parentNode.insertBefore(note,field);
+  }
+  async function lockPublicRoleSelect(){
+    addRoleNotice();
+    const roleSelect=$('aztra-new-user-role');
+    if(!roleSelect)return;
+    const can=await currentCanAssignRoles();
+    if(!can){roleSelect.value='viewer';roleSelect.setAttribute('disabled','disabled');roleSelect.title='Solo Owner/Admin puede asignar roles.'}
+    else{roleSelect.removeAttribute('disabled');roleSelect.title='Owner/Admin puede asignar rol inicial.'}
+  }
+
+  window.aztraShowOwnerBootstrapSQL=async function(){
+    const email=$('aztra-owner-email')?.value.trim() || (await getSession())?.user?.email || 'TU_CORREO_AQUI';
+    localStorage.setItem(OWNER_EMAIL_KEY,email);
+    const sql=`update public.profiles set role='owner', cargo='Owner', active=true where email='${email}';`;
+    try{await navigator.clipboard.writeText(sql)}catch(e){}
+    console.log('SQL OWNER:',sql);
+    safeAlert('SQL copiado o mostrado en consola. Ejecútalo una sola vez en Supabase SQL Editor.');
+  };
+
+  window.aztraRegisterUser=async function(){
+    const sb=getSb();
+    if(!sb){safeAlert('Configura Supabase primero.');return}
+    const canAssign=await currentCanAssignRoles();
+    const full_name=$('aztra-new-user-name')?.value.trim();
+    const email=$('aztra-new-user-email')?.value.trim();
+    const password=$('aztra-new-user-password')?.value;
+    const cargo=canAssign ? ($('aztra-new-user-cargo')?.value.trim()||'') : '';
+    const requestedRole=canAssign ? ($('aztra-new-user-role')?.value||'viewer') : 'viewer';
+    const client=canAssign ? ($('aztra-new-user-client')?.value.trim()||'') : '';
+    if(!full_name||!email||!password){safeAlert('Nombre, email y contraseña son obligatorios.');return}
+    const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name,cargo:'',role:'viewer',client_scope:''}}});
+    if(error){safeAlert('No se pudo crear usuario: '+error.message);return}
+    const newUser=data.user;
+    if(newUser){
+      try{await sb.from('profiles').upsert({id:newUser.id,email,full_name,cargo:'',role:'viewer',active:true,client_scope:[]})}catch(e){console.warn(e)}
+      if(canAssign && requestedRole!=='viewer'){
+        try{await sb.from('profiles').update({cargo,role:requestedRole,active:true,client_scope:client?[client]:[]}).eq('id',newUser.id)}catch(e){console.warn(e)}
+      }
+    }
+    safeAlert(canAssign?'Usuario creado. Rol aplicado si RLS lo permitió.':'Cuenta creada como Viewer. El Owner asignará cargos y accesos después.');
+    if(typeof window.aztraClearNewUserForm==='function')window.aztraClearNewUserForm();
+    setTimeout(()=>{try{window.aztraLoadProfiles()}catch(e){}},700);
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    addOwnerBootstrapUI();
+    setTimeout(lockPublicRoleSelect,600);
+    setTimeout(lockPublicRoleSelect,1600);
+  });
+})();
+</script>
+
+
+<script id="aztra-auth-ux-final-fix-js">
+/* ==========================================================
+   AZTRA OS — Fix UX Auth/roles
+   - Contraseña se crea en Auth, no en SQL.
+   - Rol público se muestra como Viewer fijo.
+   - Select de rol nunca queda vacío.
+   ========================================================== */
+(function(){
+  const ROLE_OPTIONS = [
+    ['viewer','Viewer — solo lectura'],
+    ['client','Client — cliente'],
+    ['designer','Designer — piezas y estados'],
+    ['editor','Editor — contenido y agenda'],
+    ['admin','Admin — gestión operativa'],
+    ['owner','Owner — control total']
+  ];
+
+  function $(id){return document.getElementById(id);}
+  function safeAlert(msg){
+    try{ if(typeof showLuminarPopup==='function') showLuminarPopup(msg); else alert(msg); }
+    catch(e){ console.log(msg); }
+  }
+
+  function getSb(){
+    if(window.aztraSupabase) return window.aztraSupabase;
+    try{
+      const cfg=JSON.parse(localStorage.getItem('aztraSupabaseAccessConfig_v1')||'{}');
+      const url=cfg.url || (typeof SUPABASE_URL!=='undefined'?SUPABASE_URL:'');
+      const key=cfg.key || (typeof SUPABASE_KEY!=='undefined'?SUPABASE_KEY:'');
+      if(url && key && window.supabase){
+        window.aztraSupabase=window.supabase.createClient(url,key);
+        return window.aztraSupabase;
+      }
+    }catch(e){}
+    return null;
+  }
+
+  async function getSession(){
+    const sb=getSb();
+    if(!sb) return null;
+    const {data}=await sb.auth.getSession();
+    return data.session || null;
+  }
+
+  async function getMyProfile(){
+    const sb=getSb();
+    const session=await getSession();
+    if(!sb || !session?.user) return null;
+    const {data}=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+    return data || null;
+  }
+
+  function isAdmin(role){
+    role=String(role||'').toLowerCase();
+    return role==='owner' || role==='admin';
+  }
+
+  async function currentCanAssignRoles(){
+    const profile=await getMyProfile();
+    return isAdmin(profile?.role);
+  }
+
+  function ensureRoleOptions(){
+    const select=$('aztra-new-user-role');
+    if(!select) return;
+    const current=select.value || 'viewer';
+    select.innerHTML = ROLE_OPTIONS.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+    select.value = ROLE_OPTIONS.some(([v])=>v===current) ? current : 'viewer';
+  }
+
+  function addPasswordHelp(){
+    const pass=$('aztra-new-user-password');
+    if(!pass || $('aztra-password-help')) return;
+    const box=document.createElement('div');
+    box.id='aztra-password-help';
+    box.className='aztra-password-help';
+    box.innerHTML=`<strong>¿Dónde va la contraseña?</strong>
+      <span>La contraseña se escribe aquí al crear la cuenta. Supabase Auth la guarda de forma segura. El SQL solo sirve para cambiar tu rol a Owner; no guarda contraseñas.</span>`;
+    const field=pass.closest('.field');
+    if(field) field.parentNode.insertBefore(box, field.nextSibling);
+  }
+
+  async function fixPublicRoleUI(){
+    ensureRoleOptions();
+    addPasswordHelp();
+
+    const select=$('aztra-new-user-role');
+    if(!select) return;
+
+    const field=select.closest('.field');
+    const can=await currentCanAssignRoles();
+
+    let display=$('aztra-role-public-display');
+
+    if(!can){
+      select.value='viewer';
+      select.disabled=true;
+      select.style.display='none';
+
+      if(!display){
+        display=document.createElement('div');
+        display.id='aztra-role-public-display';
+        display.className='aztra-role-public-display';
+        display.innerHTML=`<span>Viewer</span><small>Asignado por defecto</small>`;
+        field.appendChild(display);
+      }
+
+      const label=field.querySelector('label');
+      if(label) label.textContent='Rol inicial seguro';
+    }else{
+      select.disabled=false;
+      select.style.display='';
+      if(display) display.remove();
+      const label=field.querySelector('label');
+      if(label) label.textContent='Rol inicial';
+    }
+  }
+
+  const oldShowOwnerSQL=window.aztraShowOwnerBootstrapSQL;
+  window.aztraShowOwnerBootstrapSQL=async function(){
+    const email=$('aztra-owner-email')?.value.trim() || (await getSession())?.user?.email || 'TU_CORREO_AQUI';
+    const sql=`update public.profiles set role='owner', cargo='Owner', active=true where email='${email}';`;
+    try{ await navigator.clipboard.writeText(sql); }catch(e){}
+    console.log('SQL PARA SER OWNER:', sql);
+    safeAlert('SQL copiado o mostrado en consola. La contraseña NO va en SQL: la contraseña es la que usaste al crear tu cuenta.');
+  };
+
+  const oldRegister=window.aztraRegisterUser;
+  window.aztraRegisterUser=async function(){
+    ensureRoleOptions();
+
+    const sb=getSb();
+    if(!sb){ safeAlert('Configura Supabase primero.'); return; }
+
+    const can=await currentCanAssignRoles();
+
+    if(!can){
+      const select=$('aztra-new-user-role');
+      if(select) select.value='viewer';
+    }
+
+    if(typeof oldRegister==='function'){
+      const result=await oldRegister.apply(this,arguments);
+      setTimeout(fixPublicRoleUI,500);
+      return result;
+    }
+  };
+
+  const oldSignIn=window.aztraSignIn;
+  if(typeof oldSignIn==='function'){
+    window.aztraSignIn=async function(){
+      const result=await oldSignIn.apply(this,arguments);
+      setTimeout(fixPublicRoleUI,600);
+      return result;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    ensureRoleOptions();
+    addPasswordHelp();
+    setTimeout(fixPublicRoleUI,500);
+    setTimeout(fixPublicRoleUI,1500);
+    setTimeout(fixPublicRoleUI,3000);
   });
 })();
 </script>
