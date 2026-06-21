@@ -12748,6 +12748,325 @@ th:nth-child(7),td:nth-child(7){width:21%} th:nth-child(8),td:nth-child(8){width
 <section class="meta"><div><strong>Cliente:</strong> ${client}</div><div><strong>Periodo:</strong> ${period}</div></section>
 <table><thead><tr><th>N°</th><th>Fecha</th><th>Hora</th><th>Red</th><th>Objetivo</th><th>Formato</th><th>Título</th><th>Categoría</th><th>Guion</th></tr></thead><tbody>${buildRows()}</tbody></table>
 </main>
+
+<script id="aztra-auth-emergency-hotfix-js">
+/* ==========================================================
+   AZTRA OS — HOTFIX FINAL AUTH/ROLES
+   Objetivo: solucionar "Inicia sesión primero" al cargar usuarios.
+   - Fuerza el uso de la URL/key del HTML actual.
+   - Lee la sesión directamente desde Supabase Auth.
+   - Carga profiles sin depender de variables internas antiguas.
+   - Renderiza tabla de roles y tabla de equipo.
+   ========================================================== */
+(function(){
+  const CONFIG_KEY = 'aztraSupabaseAccessConfig_v1';
+  const ROLES = [['viewer','Viewer'],['client','Client'],['designer','Designer'],['editor','Editor'],['admin','Admin'],['owner','Owner']];
+
+  function $(id){ return document.getElementById(id); }
+  function esc(v){ return String(v ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function msg(t){ try{ if(typeof showLuminarPopup==='function') showLuminarPopup(t); else alert(t); } catch(e){ console.log(t); } }
+
+  function getConfig(){
+    let saved = {};
+    try{ saved = JSON.parse(localStorage.getItem(CONFIG_KEY) || '{}'); }catch(e){}
+    const globalUrl = (typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL) ? SUPABASE_URL : '';
+    const globalKey = (typeof SUPABASE_KEY !== 'undefined' && SUPABASE_KEY) ? SUPABASE_KEY : '';
+    const url = globalUrl || saved.url || '';
+    const key = globalKey || saved.key || '';
+
+    if(url && key){
+      try{ localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key})); }catch(e){}
+      if($('aztra-supabase-url')) $('aztra-supabase-url').value = url;
+      if($('aztra-supabase-key')) $('aztra-supabase-key').value = key;
+    }
+    return {url, key};
+  }
+
+  function getClient(){
+    if(!window.supabase) return null;
+    const cfg = getConfig();
+    if(!cfg.url || !cfg.key) return null;
+
+    // Reemplaza cualquier cliente creado con una URL/key vieja.
+    if(!window.aztraSupabase || window.aztraSupabase.__aztraFixedUrl !== cfg.url || window.aztraSupabase.__aztraFixedKey !== cfg.key){
+      window.aztraSupabase = window.supabase.createClient(cfg.url, cfg.key, {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      });
+      window.aztraSupabase.__aztraFixedUrl = cfg.url;
+      window.aztraSupabase.__aztraFixedKey = cfg.key;
+    }
+    return window.aztraSupabase;
+  }
+
+  async function getSession(){
+    const sb = getClient();
+    if(!sb) return null;
+    const {data, error} = await sb.auth.getSession();
+    if(error) console.warn('getSession error:', error);
+    return data?.session || null;
+  }
+
+  async function getProfile(session){
+    const sb = getClient();
+    if(!sb || !session?.user) return null;
+    let {data, error} = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+    if(error) console.warn('profile read error:', error);
+
+    // Si el trigger no creó el profile, crea el profile propio como viewer para desbloquear.
+    if(!data){
+      const payload = {
+        id: session.user.id,
+        email: (session.user.email || '').toLowerCase(),
+        full_name: session.user.user_metadata?.full_name || (session.user.email || 'usuario').split('@')[0],
+        cargo: '',
+        role: 'viewer',
+        active: true,
+        client_scope: []
+      };
+      const res = await sb.from('profiles').upsert(payload).select('*').maybeSingle();
+      if(res.error) console.warn('profile upsert error:', res.error);
+      data = res.data || payload;
+    }
+    return data;
+  }
+
+  function isAdmin(role){
+    role = String(role || '').toLowerCase();
+    return role === 'owner' || role === 'admin';
+  }
+
+  function roleOptions(selected){
+    return ROLES.map(([v,l])=>`<option value="${v}" ${v===selected?'selected':''}>${l}</option>`).join('');
+  }
+
+  function activeOptions(active){
+    return `<option value="true" ${active!==false?'selected':''}>Activo</option><option value="false" ${active===false?'selected':''}>Inactivo</option>`;
+  }
+
+  function clientScopeText(v){
+    if(Array.isArray(v)) return v.join(', ');
+    return String(v || '');
+  }
+
+  function renderSessionUI(session, profile){
+    const pill = $('aztra-auth-status-pill');
+    const name = $('aztra-current-user-name');
+    const email = $('aztra-current-user-email');
+    const role = $('aztra-current-user-role');
+
+    if(session?.user){
+      if(pill) pill.textContent = 'Conectado';
+      if(name) name.textContent = profile?.full_name || session.user.user_metadata?.full_name || session.user.email || 'Usuario';
+      if(email) email.textContent = session.user.email || '';
+      if(role) role.textContent = profile?.role || 'viewer';
+      document.body.dataset.aztraRole = String(profile?.role || 'viewer').toLowerCase();
+    }else{
+      if(pill) pill.textContent = getClient() ? 'Sin sesión' : 'Modo local';
+      if(name) name.textContent = 'Sin sesión';
+      if(email) email.textContent = 'Inicia sesión para sincronizar permisos.';
+      if(role) role.textContent = 'local';
+      document.body.dataset.aztraRole = 'local';
+    }
+  }
+
+  function renderRoleEditor(profiles){
+    const body = $('aztra-role-editor-body');
+    if(!body) return;
+    if(!profiles?.length){
+      body.innerHTML = '<tr><td colspan="7">No hay perfiles para mostrar.</td></tr>';
+      return;
+    }
+    body.innerHTML = profiles.map(p=>`
+      <tr data-profile-id="${esc(p.id)}">
+        <td>${esc(p.full_name || 'Usuario')}</td>
+        <td>${esc(p.email || '')}</td>
+        <td><input class="aztra-role-inline-input" id="cargo-${esc(p.id)}" value="${esc(p.cargo || '')}" placeholder="Cargo"></td>
+        <td><select class="aztra-role-inline-select" id="role-${esc(p.id)}">${roleOptions(p.role || 'viewer')}</select></td>
+        <td><select class="aztra-role-inline-select" id="active-${esc(p.id)}">${activeOptions(p.active)}</select></td>
+        <td><input class="aztra-role-inline-input" id="client-${esc(p.id)}" value="${esc(clientScopeText(p.client_scope))}" placeholder="Cliente o clientes"></td>
+        <td><button class="btn-primary aztra-mini-save-role" onclick="aztraUpdateUserRole('${esc(p.id)}')">Guardar</button></td>
+      </tr>`).join('');
+  }
+
+  function renderTeamTable(profiles){
+    const body = $('aztra-users-table-body');
+    if(!body) return;
+    if(!profiles?.length){
+      body.innerHTML = '<tr><td colspan="6">No hay perfiles para mostrar.</td></tr>';
+      return;
+    }
+    body.innerHTML = profiles.map(p=>`
+      <tr>
+        <td>${esc(p.full_name || 'Usuario')}</td>
+        <td>${esc(p.email || '')}</td>
+        <td>${esc(p.cargo || '—')}</td>
+        <td><span class="aztra-role-chip">${esc(p.role || 'viewer')}</span></td>
+        <td>${p.active !== false ? 'Activo' : 'Inactivo'}</td>
+        <td>${esc(clientScopeText(p.client_scope) || '—')}</td>
+      </tr>`).join('');
+  }
+
+  window.aztraOpenAuthModal = function(){
+    let modal = $('aztra-auth-backdrop');
+    if(!modal){
+      modal = document.createElement('div');
+      modal.id = 'aztra-auth-backdrop';
+      modal.className = 'aztra-auth-backdrop';
+      modal.innerHTML = `<div class="aztra-auth-modal">
+        <button class="aztra-auth-close" onclick="aztraCloseAuthModal()">×</button>
+        <h2>Acceso Aztra OS</h2>
+        <p>Inicia sesión con tu cuenta registrada en Supabase Auth.</p>
+        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" type="email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" type="password" placeholder="Contraseña"></div>
+        <div class="aztra-access-actions">
+          <button class="btn-primary" onclick="aztraSignIn()">Ingresar</button>
+          <button class="btn" onclick="aztraCloseAuthModal()">Cancelar</button>
+        </div>
+      </div>`;
+      document.body.appendChild(modal);
+    }
+    modal.classList.add('active');
+    setTimeout(()=>{$('aztra-login-email')?.focus();},80);
+  };
+
+  window.aztraCloseAuthModal = function(){
+    $('aztra-auth-backdrop')?.classList.remove('active');
+  };
+
+  window.aztraSignIn = async function(){
+    const sb = getClient();
+    if(!sb){ msg('Falta configurar Supabase URL y anon/publishable key.'); return; }
+    const email = $('aztra-login-email')?.value.trim();
+    const password = $('aztra-login-password')?.value || '';
+    if(!email || !password){ msg('Coloca email y contraseña.'); return; }
+
+    const {data, error} = await sb.auth.signInWithPassword({email, password});
+    if(error){ msg('No se pudo iniciar sesión: ' + error.message); return; }
+
+    const session = data?.session || await getSession();
+    if(!session){ msg('Login enviado, pero Supabase no devolvió sesión. Revisa confirmación de correo o la key pública.'); return; }
+
+    const profile = await getProfile(session);
+    renderSessionUI(session, profile);
+    window.aztraCloseAuthModal();
+    await window.aztraLoadProfiles();
+    msg('Sesión iniciada correctamente.');
+  };
+
+  window.aztraSignOut = async function(){
+    const sb = getClient();
+    if(sb) await sb.auth.signOut();
+    renderSessionUI(null, null);
+    renderRoleEditor([]);
+    renderTeamTable([]);
+    msg('Sesión cerrada.');
+  };
+
+  window.aztraLoadProfiles = async function(){
+    const sb = getClient();
+    const roleBody = $('aztra-role-editor-body');
+    const teamBody = $('aztra-users-table-body');
+
+    if(!sb){
+      if(roleBody) roleBody.innerHTML = '<tr><td colspan="7">Configura Supabase primero.</td></tr>';
+      if(teamBody) teamBody.innerHTML = '<tr><td colspan="6">Configura Supabase primero.</td></tr>';
+      msg('Configura Supabase primero.');
+      return;
+    }
+
+    const session = await getSession();
+    if(!session){
+      if(roleBody) roleBody.innerHTML = '<tr><td colspan="7">Inicia sesión primero.</td></tr>';
+      if(teamBody) teamBody.innerHTML = '<tr><td colspan="6">Inicia sesión primero.</td></tr>';
+      renderSessionUI(null, null);
+      window.aztraOpenAuthModal();
+      msg('Tu cuenta ya existe. Solo falta iniciar sesión dentro de Aztra OS.');
+      return;
+    }
+
+    const me = await getProfile(session);
+    renderSessionUI(session, me);
+
+    const ownerHelp = $('aztra-owner-help');
+    if(ownerHelp) ownerHelp.style.display = isAdmin(me?.role) ? 'none' : 'grid';
+
+    if(!isAdmin(me?.role)){
+      const single = [me].filter(Boolean);
+      renderRoleEditor(single);
+      renderTeamTable(single);
+      msg('Tu sesión está activa, pero tu rol no es Owner/Admin. Revisa el role en public.profiles.');
+      return;
+    }
+
+    const {data, error} = await sb.from('profiles').select('*').order('created_at', {ascending:false});
+    if(error){
+      console.warn('profiles read error:', error);
+      if(roleBody) roleBody.innerHTML = '<tr><td colspan="7">No se pudo leer profiles. Revisa RLS.</td></tr>';
+      if(teamBody) teamBody.innerHTML = '<tr><td colspan="6">No se pudo leer profiles. Revisa RLS.</td></tr>';
+      msg('No se pudo leer profiles: ' + error.message);
+      return;
+    }
+
+    renderRoleEditor(data || []);
+    renderTeamTable(data || []);
+  };
+
+  window.aztraUpdateUserRole = async function(id){
+    const sb = getClient();
+    const session = await getSession();
+    const me = await getProfile(session);
+    if(!sb || !session){ msg('Inicia sesión primero.'); return; }
+    if(!isAdmin(me?.role)){ msg('Solo Owner/Admin puede cambiar roles.'); return; }
+
+    const cargo = $(`cargo-${id}`)?.value.trim() || '';
+    const role = $(`role-${id}`)?.value || 'viewer';
+    const active = ($(`active-${id}`)?.value || 'true') === 'true';
+    const clientText = $(`client-${id}`)?.value.trim() || '';
+    const client_scope = clientText ? clientText.split(',').map(x=>x.trim()).filter(Boolean) : [];
+
+    const {error} = await sb.from('profiles').update({cargo, role, active, client_scope}).eq('id', id);
+    if(error){ msg('No se pudo actualizar: ' + error.message); return; }
+    msg('Usuario actualizado.');
+    await window.aztraLoadProfiles();
+  };
+
+  window.aztraTestSupabaseAccess = async function(){
+    const sb = getClient();
+    if(!sb){ msg('Falta URL/key de Supabase.'); return; }
+    const {data, error} = await sb.auth.getSession();
+    console.log('AZTRA SESSION:', data?.session || null, error || null);
+    msg(error ? 'No se pudo conectar con Supabase.' : (data?.session ? 'Conectado con sesión activa.' : 'Conectado a Supabase. Falta iniciar sesión.'));
+  };
+
+  window.aztraSaveSupabaseAccessConfig = function(){
+    const url = $('aztra-supabase-url')?.value.trim() || '';
+    const key = $('aztra-supabase-key')?.value.trim() || '';
+    if(url && key){ localStorage.setItem(CONFIG_KEY, JSON.stringify({url, key})); }
+    window.aztraSupabase = null;
+    getClient();
+    msg('Conexión guardada. Ahora inicia sesión.');
+  };
+
+  document.addEventListener('DOMContentLoaded', async function(){
+    getConfig();
+    const sb = getClient();
+    if(sb){
+      sb.auth.onAuthStateChange(async function(_event, session){
+        const profile = session ? await getProfile(session) : null;
+        renderSessionUI(session, profile);
+      });
+      const session = await getSession();
+      const profile = session ? await getProfile(session) : null;
+      renderSessionUI(session, profile);
+    }
+  });
+})();
+</script>
+
 </body>
 </html>`;
   }
