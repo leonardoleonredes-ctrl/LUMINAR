@@ -7745,6 +7745,248 @@ body{
 }
 </style>
 
+
+<style id="aztra-auth-roles-access-css">
+/* ==========================================================
+   AZTRA OS — Usuarios, cargos, roles y accesos
+   Supabase Auth + Profiles + RLS ready
+   ========================================================== */
+.aztra-access-title{
+  display:flex;
+  justify-content:space-between;
+  gap:1rem;
+  align-items:flex-start;
+}
+
+.aztra-auth-pill,
+.aztra-role-chip{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:.35rem;
+  border:1px solid color-mix(in srgb,var(--aztra-accent,#00f0ff) 35%, transparent);
+  color:#fff;
+  background:color-mix(in srgb,var(--aztra-accent,#00f0ff) 14%, transparent);
+  border-radius:999px;
+  padding:.35rem .65rem;
+  font-size:.72rem;
+  font-weight:950;
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+
+.aztra-access-panel{
+  overflow:visible!important;
+}
+
+.aztra-access-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin-top:1rem;
+}
+
+.aztra-access-card{
+  border:1px solid var(--aztra-border,rgba(255,255,255,.10));
+  border-radius:22px;
+  padding:1rem;
+  background:linear-gradient(180deg,var(--aztra-surface,rgba(255,255,255,.06)),var(--aztra-surface-2,rgba(255,255,255,.03)));
+}
+
+.aztra-access-card-head{
+  display:flex;
+  flex-direction:column;
+  gap:.25rem;
+  margin-bottom:.9rem;
+}
+
+.aztra-access-card-head span{
+  font-weight:950;
+  font-size:1rem;
+}
+
+.aztra-access-card-head small,
+.aztra-access-note,
+.aztra-access-warning{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  line-height:1.45;
+}
+
+.aztra-access-warning{
+  border:1px solid rgba(251,191,36,.24);
+  background:rgba(251,191,36,.08);
+  padding:.75rem;
+  border-radius:14px;
+}
+
+.aztra-access-actions{
+  display:flex;
+  gap:.6rem;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-top:.85rem;
+}
+
+.aztra-session-box{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:18px;
+  padding:.9rem;
+  background:rgba(0,0,0,.16);
+}
+
+.aztra-session-box strong,
+.aztra-session-box small{
+  display:block;
+}
+
+.aztra-session-box small{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  margin-top:.2rem;
+}
+
+.aztra-permission-list{
+  display:grid;
+  gap:.55rem;
+}
+
+.aztra-permission-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:14px;
+  padding:.72rem .8rem;
+  background:rgba(0,0,0,.12);
+}
+
+.aztra-permission-row b{
+  text-transform:uppercase;
+  letter-spacing:.35px;
+}
+
+.aztra-permission-row span{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  font-size:.78rem;
+  text-align:right;
+}
+
+.aztra-users-table-wrap{
+  width:100%;
+  overflow-x:auto;
+  margin-top:.9rem;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.08);
+}
+
+.aztra-users-table{
+  width:100%;
+  min-width:860px;
+  border-collapse:collapse;
+}
+
+.aztra-users-table th,
+.aztra-users-table td{
+  padding:.85rem;
+  border-bottom:1px solid rgba(255,255,255,.07);
+  text-align:left;
+  font-size:.86rem;
+}
+
+.aztra-users-table th{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  font-size:.72rem;
+  text-transform:uppercase;
+  letter-spacing:.4px;
+}
+
+.aztra-auth-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:100200;
+  display:none;
+  place-items:center;
+  background:rgba(0,0,0,.64);
+  backdrop-filter:blur(12px);
+  padding:1rem;
+}
+
+.aztra-auth-backdrop.active{
+  display:grid;
+}
+
+.aztra-auth-modal{
+  width:min(440px,100%);
+  border:1px solid var(--aztra-border,rgba(0,240,255,.25));
+  border-radius:26px;
+  background:
+    radial-gradient(circle at 0% 0%, color-mix(in srgb,var(--aztra-accent,#00f0ff) 16%, transparent), transparent 40%),
+    linear-gradient(180deg,rgba(10,14,32,.96),rgba(6,8,18,.94));
+  box-shadow:0 30px 90px rgba(0,0,0,.52);
+  padding:1.2rem;
+}
+
+.aztra-auth-modal h2{
+  margin:.2rem 0 .35rem;
+  font-family:'Orbitron',sans-serif;
+}
+
+.aztra-auth-modal p{
+  color:var(--aztra-text-muted,rgba(255,255,255,.66));
+  line-height:1.45;
+}
+
+.aztra-auth-close{
+  float:right;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  border-radius:12px;
+  width:34px;
+  height:34px;
+  cursor:pointer;
+}
+
+body[data-aztra-role="viewer"] [data-permission="edit"],
+body[data-aztra-role="viewer"] [data-permission="admin"],
+body[data-aztra-role="client"] [data-permission="admin"],
+body[data-aztra-role="designer"] [data-permission="admin"],
+body[data-aztra-role="editor"] [data-permission="admin"]{
+  display:none!important;
+}
+
+.aztra-locked-section{
+  position:relative;
+}
+
+.aztra-locked-section::after{
+  content:"Acceso restringido por rol";
+  position:absolute;
+  inset:0;
+  display:grid;
+  place-items:center;
+  z-index:20;
+  border-radius:inherit;
+  background:rgba(0,0,0,.62);
+  color:#fff;
+  font-weight:950;
+  letter-spacing:.3px;
+}
+
+@media(max-width:900px){
+  .aztra-access-grid{
+    grid-template-columns:1fr;
+  }
+  .aztra-access-title{
+    flex-direction:column;
+  }
+}
+</style>
+
 </head>
 <body class="mode-macro">
 <div class="luminar-popup-backdrop" id="luminar-popup-backdrop"><div class="luminar-popup" id="luminar-popup-box"><h3>Luminar</h3><p id="luminar-popup-message"></p><button class="btn" onclick="closeLuminarPopup()">Aceptar</button></div></div>
@@ -8599,7 +8841,7 @@ Se quitará de la biblioteca de etiquetas. Las tareas que ya la usan conservará
 </section>
 <section class="app-section" id="sec-config">
 <div class="settings-shell">
-<div class="card settings-nav"><button class="settings-tab active" data-panel="set-dashboard">📊 Dashboard</button><button class="settings-tab" data-panel="set-style">🎨 Personalización</button><button class="settings-tab" data-panel="set-profile">👤 Perfil</button></div>
+<div class="card settings-nav"><button class="settings-tab active" data-panel="set-dashboard">📊 Dashboard</button><button class="settings-tab" data-panel="set-style">🎨 Personalización</button><button class="settings-tab" data-panel="set-profile">👤 Perfil</button><button class="settings-tab" data-panel="set-access">🔐 Accesos</button></div>
 <div>
 <div class="card settings-panel active aztra-dashboard-settings-panel" id="set-dashboard">
   <div class="card-title aztra-settings-title">
@@ -9278,6 +9520,130 @@ Se quitará de la biblioteca de etiquetas. Las tareas que ya la usan conservará
 </div>
 
 <div class="card settings-panel" id="set-profile"><div class="card-title">Perfil</div><div class="settings-grid"><div class="field"><label>¿Cómo quieres ser llamado?</label><input class="input" id="profile-input-name" value="Leo"/></div><div class="field"><label>Género para mensajes</label><select class="select" id="profile-gender"><option value="masculino">Masculino</option><option value="femenino">Femenino</option><option value="neutro">Neutro</option></select></div><div class="field"><label>Foto</label><input accept="image/*" class="input" onchange="loadProfilePhoto(event)" type="file"/></div></div><button class="btn-primary" onclick="saveProfile()" style="margin-top:1rem">Guardar perfil</button></div>
+
+<div class="card settings-panel aztra-access-panel" id="set-access">
+  <div class="card-title aztra-access-title">
+    <div>
+      <span>Usuarios, cargos y accesos</span>
+      <small>Supabase Auth + Profiles + Roles + Permisos + RLS</small>
+    </div>
+    <span class="aztra-auth-pill" id="aztra-auth-status-pill">Modo local</span>
+  </div>
+
+  <div class="aztra-access-grid">
+    <div class="aztra-access-card">
+      <div class="aztra-access-card-head">
+        <span>Conexión Supabase</span>
+        <small>Usa URL y anon/publishable key. Nunca pegues la service_role key aquí.</small>
+      </div>
+      <div class="settings-grid">
+        <div class="field">
+          <label>Supabase URL</label>
+          <input class="input" id="aztra-supabase-url" placeholder="https://xxxx.supabase.co"/>
+        </div>
+        <div class="field">
+          <label>Anon / Publishable Key</label>
+          <input class="input" id="aztra-supabase-key" placeholder="eyJ... o sb_publishable_..."/>
+        </div>
+      </div>
+      <div class="aztra-access-actions">
+        <button class="btn-primary" onclick="aztraSaveSupabaseAccessConfig()">Guardar conexión</button>
+        <button class="btn" onclick="aztraTestSupabaseAccess()">Probar conexión</button>
+      </div>
+      <p class="aztra-access-note">Esta conexión activa login, perfiles y permisos. Los datos sensibles quedan protegidos por RLS en Supabase.</p>
+    </div>
+
+    <div class="aztra-access-card">
+      <div class="aztra-access-card-head">
+        <span>Sesión actual</span>
+        <small>Usuario conectado y rol aplicado en la interfaz.</small>
+      </div>
+      <div class="aztra-session-box">
+        <div>
+          <strong id="aztra-current-user-name">Sin sesión</strong>
+          <small id="aztra-current-user-email">Inicia sesión para sincronizar permisos.</small>
+        </div>
+        <span id="aztra-current-user-role" class="aztra-role-chip">local</span>
+      </div>
+      <div class="aztra-access-actions">
+        <button class="btn-primary" onclick="aztraOpenAuthModal()">Iniciar sesión</button>
+        <button class="btn" onclick="aztraSignOut()">Cerrar sesión</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="aztra-access-grid">
+    <div class="aztra-access-card">
+      <div class="aztra-access-card-head">
+        <span>Crear / registrar usuario</span>
+        <small>Alta con email y contraseña usando Supabase Auth.</small>
+      </div>
+      <div class="settings-grid">
+        <div class="field"><label>Nombre completo</label><input class="input" id="aztra-new-user-name" placeholder="Ej. Leo"></div>
+        <div class="field"><label>Email</label><input class="input" id="aztra-new-user-email" type="email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña temporal</label><input class="input" id="aztra-new-user-password" type="password" placeholder="Mínimo 6 caracteres"></div>
+        <div class="field"><label>Cargo</label><input class="input" id="aztra-new-user-cargo" placeholder="Editor, Diseñador, Cliente..."></div>
+        <div class="field">
+          <label>Rol inicial</label>
+          <select class="select" id="aztra-new-user-role">
+            <option value="viewer">Viewer — solo lectura</option>
+            <option value="client">Client — cliente</option>
+            <option value="designer">Designer — piezas y estados</option>
+            <option value="editor">Editor — contenido y agenda</option>
+            <option value="admin">Admin — gestión operativa</option>
+            <option value="owner">Owner — control total</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Cliente asignado</label>
+          <input class="input" id="aztra-new-user-client" placeholder="Opcional: nombre del cliente">
+        </div>
+      </div>
+      <div class="aztra-access-actions">
+        <button class="btn-primary" onclick="aztraRegisterUser()">Crear usuario</button>
+        <button class="btn" onclick="aztraClearNewUserForm()">Limpiar</button>
+      </div>
+      <p class="aztra-access-warning">Seguridad: desde el HTML solo se puede crear usuario con Auth público. Para creación 100% admin sin cambiar sesión, usar Edge Function con service_role.</p>
+    </div>
+
+    <div class="aztra-access-card">
+      <div class="aztra-access-card-head">
+        <span>Permisos por rol</span>
+        <small>Matriz base aplicada también por RLS.</small>
+      </div>
+      <div class="aztra-permission-list" id="aztra-permission-list"></div>
+    </div>
+  </div>
+
+  <div class="aztra-access-card">
+    <div class="aztra-access-card-head">
+      <span>Equipo y perfiles</span>
+      <small>Los perfiles se leen desde la tabla profiles. Admin/Owner pueden ver el equipo completo.</small>
+    </div>
+    <div class="aztra-access-actions">
+      <button class="btn-primary" onclick="aztraLoadProfiles()">Actualizar lista</button>
+      <button class="btn" onclick="aztraApplyRolePermissions()">Reaplicar permisos</button>
+    </div>
+    <div class="aztra-users-table-wrap">
+      <table class="aztra-users-table">
+        <thead>
+          <tr>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Cargo</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Cliente</th>
+          </tr>
+        </thead>
+        <tbody id="aztra-users-table-body">
+          <tr><td colspan="6">Conecta Supabase e inicia sesión para cargar perfiles.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 </div>
 </div>
 </section>
@@ -15555,6 +15921,623 @@ th:nth-child(8),td:nth-child(8){width:18%}
 
   window.addEventListener('resize',()=>setTimeout(ensureMobileThemeCoherence,120));
   window.addEventListener('orientationchange',()=>setTimeout(ensureMobileThemeCoherence,260));
+})();
+</script>
+
+
+<script id="aztra-auth-roles-access-js">
+/* ==========================================================
+   AZTRA OS — Supabase Auth + profiles + roles + permissions
+   No usa service_role en frontend.
+   ========================================================== */
+(function(){
+  const CONFIG_KEY='aztraSupabaseAccessConfig_v1';
+
+  const ROLE_PERMISSIONS={
+    owner:['dashboard.view','clients.manage','agenda.manage','plan.manage','calendar.manage','scripts.manage','reports.view','settings.manage','users.manage','roles.manage'],
+    admin:['dashboard.view','clients.manage','agenda.manage','plan.manage','calendar.manage','scripts.manage','reports.view','settings.manage','users.manage'],
+    editor:['dashboard.view','clients.view','agenda.manage','plan.manage','calendar.manage','scripts.manage','reports.view'],
+    designer:['dashboard.view','clients.view','agenda.view','plan.view','plan.status','calendar.view','scripts.view'],
+    client:['dashboard.view','agenda.view','plan.view','calendar.view','scripts.view'],
+    viewer:['dashboard.view','clients.view','agenda.view','plan.view','calendar.view','scripts.view','reports.view']
+  };
+
+  const ROLE_LABELS={
+    owner:'Owner',
+    admin:'Admin',
+    editor:'Editor',
+    designer:'Designer',
+    client:'Client',
+    viewer:'Viewer'
+  };
+
+  const SECTION_PERMISSIONS={
+    'sec-dashboard':'dashboard.view',
+    'sec-clientes':'clients.view',
+    'sec-agenda':'agenda.view',
+    'sec-plan':'plan.view',
+    'sec-cal-contenido':'calendar.view',
+    'sec-guiones':'scripts.view',
+    'sec-radar':'reports.view',
+    'sec-rendimiento-personal':'reports.view',
+    'sec-resumen':'reports.view',
+    'sec-cuadernos':'scripts.view',
+    'sec-config':'settings.manage'
+  };
+
+  let aztraSb=null;
+  let aztraSession=null;
+  let aztraProfile=null;
+
+  function $(id){return document.getElementById(id);}
+  function safeAlert(msg){
+    try{ if(typeof showLuminarPopup==='function') showLuminarPopup(msg); else alert(msg); }
+    catch(e){ console.log(msg); }
+  }
+
+  function getDefaultConfig(){
+    const fromGlobals={
+      url:(typeof SUPABASE_URL!=='undefined' ? SUPABASE_URL : ''),
+      key:(typeof SUPABASE_KEY!=='undefined' ? SUPABASE_KEY : '')
+    };
+    try{
+      return Object.assign(fromGlobals, JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}'));
+    }catch(e){return fromGlobals;}
+  }
+
+  function syncConfigPanel(){
+    const cfg=getDefaultConfig();
+    if($('aztra-supabase-url') && !$('aztra-supabase-url').value) $('aztra-supabase-url').value=cfg.url||'';
+    if($('aztra-supabase-key') && !$('aztra-supabase-key').value) $('aztra-supabase-key').value=cfg.key||'';
+  }
+
+  function initClient(){
+    const cfg=getDefaultConfig();
+    if(!cfg.url || !cfg.key || !window.supabase) return null;
+    try{
+      aztraSb=window.supabase.createClient(cfg.url,cfg.key);
+      window.aztraSupabase=aztraSb;
+      return aztraSb;
+    }catch(e){
+      console.warn('No se pudo iniciar Supabase Auth',e);
+      return null;
+    }
+  }
+
+  function hasPermission(permission){
+    const role=(aztraProfile?.role || 'viewer').toLowerCase();
+    return (ROLE_PERMISSIONS[role]||ROLE_PERMISSIONS.viewer).includes(permission);
+  }
+
+  function roleIsAdmin(){
+    const r=(aztraProfile?.role || '').toLowerCase();
+    return r==='owner' || r==='admin';
+  }
+
+  function renderPermissions(){
+    const box=$('aztra-permission-list');
+    if(!box) return;
+    const rows=Object.entries(ROLE_PERMISSIONS).map(([role,perms])=>{
+      return `<div class="aztra-permission-row"><b>${ROLE_LABELS[role]||role}</b><span>${perms.join(' · ')}</span></div>`;
+    }).join('');
+    box.innerHTML=rows;
+  }
+
+  function updateSessionUI(){
+    const pill=$('aztra-auth-status-pill');
+    const name=$('aztra-current-user-name');
+    const email=$('aztra-current-user-email');
+    const role=$('aztra-current-user-role');
+
+    if(aztraSession?.user){
+      if(pill) pill.textContent='Conectado';
+      if(name) name.textContent=aztraProfile?.full_name || aztraSession.user.user_metadata?.full_name || aztraSession.user.email || 'Usuario';
+      if(email) email.textContent=aztraSession.user.email || '';
+      if(role) role.textContent=aztraProfile?.role || 'viewer';
+    }else{
+      if(pill) pill.textContent=aztraSb ? 'Sin sesión' : 'Modo local';
+      if(name) name.textContent='Sin sesión';
+      if(email) email.textContent=aztraSb ? 'Inicia sesión para sincronizar permisos.' : 'Configura Supabase para activar Auth.';
+      if(role) role.textContent='local';
+    }
+
+    document.body.dataset.aztraRole=(aztraProfile?.role || (aztraSession?'viewer':'local')).toLowerCase();
+  }
+
+  function applyRolePermissions(){
+    const role=(aztraProfile?.role || 'owner').toLowerCase();
+    document.body.dataset.aztraRole=role;
+
+    document.querySelectorAll('.menu-item[data-section]').forEach(item=>{
+      const sid=item.getAttribute('data-section');
+      const perm=SECTION_PERMISSIONS[sid];
+      if(!perm) return;
+      const allowed=hasPermission(perm) || role==='owner' || role==='admin';
+      item.style.display=allowed ? '' : 'none';
+    });
+
+    document.querySelectorAll('[data-requires-permission]').forEach(el=>{
+      const perm=el.getAttribute('data-requires-permission');
+      el.style.display=hasPermission(perm) ? '' : 'none';
+    });
+
+    const active=document.querySelector('.app-section.active');
+    if(active){
+      const perm=SECTION_PERMISSIONS[active.id];
+      if(perm && !hasPermission(perm) && typeof navigate==='function'){
+        navigate('sec-dashboard');
+      }
+    }
+  }
+
+  async function ensureProfile(){
+    if(!aztraSb || !aztraSession?.user) return null;
+    const user=aztraSession.user;
+    let {data,error}=await aztraSb.from('profiles').select('*').eq('id',user.id).maybeSingle();
+    if(error) console.warn('profiles select error',error);
+
+    if(!data){
+      const payload={
+        id:user.id,
+        email:user.email,
+        full_name:user.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuario',
+        cargo:user.user_metadata?.cargo || '',
+        role:user.user_metadata?.role || 'viewer',
+        active:true,
+        client_scope:user.user_metadata?.client_scope ? [user.user_metadata.client_scope] : []
+      };
+      const res=await aztraSb.from('profiles').upsert(payload).select('*').maybeSingle();
+      data=res.data || payload;
+    }
+
+    aztraProfile=data;
+    return data;
+  }
+
+  async function refreshSession(){
+    if(!aztraSb) initClient();
+    if(!aztraSb){ updateSessionUI(); return null; }
+
+    const {data}=await aztraSb.auth.getSession();
+    aztraSession=data.session || null;
+    if(aztraSession) await ensureProfile();
+
+    updateSessionUI();
+    applyRolePermissions();
+    if(roleIsAdmin()) await loadProfiles();
+    else renderOwnProfile();
+
+    return aztraSession;
+  }
+
+  function renderOwnProfile(){
+    const body=$('aztra-users-table-body');
+    if(!body) return;
+    if(!aztraProfile){
+      body.innerHTML='<tr><td colspan="6">Inicia sesión para ver tu perfil.</td></tr>';
+      return;
+    }
+    body.innerHTML=`<tr>
+      <td>${aztraProfile.full_name||'Usuario'}</td>
+      <td>${aztraProfile.email||aztraSession?.user?.email||''}</td>
+      <td>${aztraProfile.cargo||'—'}</td>
+      <td><span class="aztra-role-chip">${aztraProfile.role||'viewer'}</span></td>
+      <td>${aztraProfile.active?'Activo':'Inactivo'}</td>
+      <td>${(aztraProfile.client_scope||[]).join(', ')||'—'}</td>
+    </tr>`;
+  }
+
+  async function loadProfiles(){
+    const body=$('aztra-users-table-body');
+    if(!body) return;
+    if(!aztraSb || !aztraSession){
+      body.innerHTML='<tr><td colspan="6">Conecta Supabase e inicia sesión para cargar perfiles.</td></tr>';
+      return;
+    }
+
+    let query=aztraSb.from('profiles').select('*').order('created_at',{ascending:false});
+    const {data,error}=await query;
+    if(error){
+      console.warn(error);
+      body.innerHTML=`<tr><td colspan="6">No se pudo cargar perfiles. Revisa RLS o permisos del rol.</td></tr>`;
+      return;
+    }
+
+    const rows=(data||[]).map(p=>`<tr>
+      <td>${p.full_name||'—'}</td>
+      <td>${p.email||'—'}</td>
+      <td>${p.cargo||'—'}</td>
+      <td><span class="aztra-role-chip">${p.role||'viewer'}</span></td>
+      <td>${p.active?'Activo':'Inactivo'}</td>
+      <td>${Array.isArray(p.client_scope)?p.client_scope.join(', '):(p.client_scope||'—')}</td>
+    </tr>`).join('');
+
+    body.innerHTML=rows || '<tr><td colspan="6">Aún no hay perfiles.</td></tr>';
+  }
+
+  window.aztraSaveSupabaseAccessConfig=function(){
+    const url=$('aztra-supabase-url')?.value.trim() || '';
+    const key=$('aztra-supabase-key')?.value.trim() || '';
+    localStorage.setItem(CONFIG_KEY,JSON.stringify({url,key}));
+    initClient();
+    refreshSession();
+    safeAlert('Conexión Supabase guardada.');
+  };
+
+  window.aztraTestSupabaseAccess=async function(){
+    initClient();
+    if(!aztraSb){ safeAlert('Primero coloca URL y anon/publishable key.'); return; }
+    const {data,error}=await aztraSb.auth.getSession();
+    safeAlert(error ? 'No se pudo conectar con Supabase.' : 'Conexión Supabase lista.');
+    console.log('Supabase session test:',{data,error});
+  };
+
+  window.aztraOpenAuthModal=function(){
+    let modal=$('aztra-auth-backdrop');
+    if(!modal){
+      modal=document.createElement('div');
+      modal.id='aztra-auth-backdrop';
+      modal.className='aztra-auth-backdrop';
+      modal.innerHTML=`<div class="aztra-auth-modal">
+        <button class="aztra-auth-close" onclick="aztraCloseAuthModal()">×</button>
+        <h2>Acceso Aztra OS</h2>
+        <p>Inicia sesión con Supabase Auth para aplicar perfiles, roles y permisos.</p>
+        <div class="field"><label>Email</label><input class="input" id="aztra-login-email" type="email" placeholder="usuario@empresa.com"></div>
+        <div class="field"><label>Contraseña</label><input class="input" id="aztra-login-password" type="password" placeholder="Contraseña"></div>
+        <div class="aztra-access-actions">
+          <button class="btn-primary" onclick="aztraSignIn()">Ingresar</button>
+          <button class="btn" onclick="aztraCloseAuthModal()">Cancelar</button>
+        </div>
+      </div>`;
+      document.body.appendChild(modal);
+    }
+    modal.classList.add('active');
+  };
+
+  window.aztraCloseAuthModal=function(){
+    $('aztra-auth-backdrop')?.classList.remove('active');
+  };
+
+  window.aztraSignIn=async function(){
+    initClient();
+    if(!aztraSb){ safeAlert('Configura Supabase primero.'); return; }
+    const email=$('aztra-login-email')?.value.trim();
+    const password=$('aztra-login-password')?.value;
+    if(!email || !password){ safeAlert('Coloca email y contraseña.'); return; }
+    const {data,error}=await aztraSb.auth.signInWithPassword({email,password});
+    if(error){ safeAlert('No se pudo iniciar sesión: '+error.message); return; }
+    aztraSession=data.session;
+    await ensureProfile();
+    updateSessionUI();
+    applyRolePermissions();
+    await loadProfiles();
+    window.aztraCloseAuthModal();
+    safeAlert('Sesión iniciada.');
+  };
+
+  window.aztraSignOut=async function(){
+    if(aztraSb) await aztraSb.auth.signOut();
+    aztraSession=null;
+    aztraProfile=null;
+    updateSessionUI();
+    applyRolePermissions();
+    renderOwnProfile();
+    safeAlert('Sesión cerrada.');
+  };
+
+  window.aztraRegisterUser=async function(){
+    initClient();
+    if(!aztraSb){ safeAlert('Configura Supabase primero.'); return; }
+
+    const full_name=$('aztra-new-user-name')?.value.trim();
+    const email=$('aztra-new-user-email')?.value.trim();
+    const password=$('aztra-new-user-password')?.value;
+    const cargo=$('aztra-new-user-cargo')?.value.trim();
+    const role=$('aztra-new-user-role')?.value || 'viewer';
+    const client=$('aztra-new-user-client')?.value.trim();
+
+    if(!full_name || !email || !password){ safeAlert('Nombre, email y contraseña son obligatorios.'); return; }
+
+    const metadata={full_name,cargo,role,client_scope:client||''};
+    const {data,error}=await aztraSb.auth.signUp({email,password,options:{data:metadata}});
+    if(error){ safeAlert('No se pudo crear usuario: '+error.message); return; }
+
+    const newUser=data.user;
+    if(newUser){
+      try{
+        await aztraSb.from('profiles').upsert({
+          id:newUser.id,
+          email,
+          full_name,
+          cargo,
+          role,
+          active:true,
+          client_scope:client?[client]:[]
+        });
+      }catch(e){console.warn(e);}
+    }
+
+    safeAlert('Usuario creado. Si tu proyecto exige confirmación por email, debe confirmar antes de ingresar.');
+    window.aztraClearNewUserForm();
+    setTimeout(refreshSession,600);
+  };
+
+  window.aztraClearNewUserForm=function(){
+    ['aztra-new-user-name','aztra-new-user-email','aztra-new-user-password','aztra-new-user-cargo','aztra-new-user-client'].forEach(id=>{
+      const el=$(id); if(el) el.value='';
+    });
+    if($('aztra-new-user-role')) $('aztra-new-user-role').value='viewer';
+  };
+
+  window.aztraLoadProfiles=loadProfiles;
+  window.aztraApplyRolePermissions=function(){
+    applyRolePermissions();
+    safeAlert('Permisos reaplicados según rol actual.');
+  };
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    syncConfigPanel();
+    renderPermissions();
+    initClient();
+
+    if(aztraSb){
+      aztraSb.auth.onAuthStateChange((_event,session)=>{
+        aztraSession=session;
+        if(session) ensureProfile().then(()=>{updateSessionUI();applyRolePermissions(); if(roleIsAdmin()) loadProfiles(); else renderOwnProfile();});
+        else {aztraProfile=null; updateSessionUI(); applyRolePermissions(); renderOwnProfile();}
+      });
+    }
+
+    setTimeout(refreshSession,650);
+  });
+})();
+</script>
+
+
+<script id="aztra-pdf-plan-definitivo-8-columnas-js">
+/* ==========================================================
+   AZTRA OS — PDF Plan definitivo
+   Exporta SOLO:
+   N°, Fecha, Hora, Red, Objetivo, Formato, Título, Categoría.
+   Elimina definitivamente Tipo, Guion, Refs y X del PDF.
+   No toca la tabla editable de pantalla.
+   ========================================================== */
+(function(){
+  function esc(v){
+    return String(v ?? '')
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/"/g,'&quot;');
+  }
+
+  function getCssUrl(varName){
+    try{
+      const raw=getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+      const match=raw.match(/url\((["']?)(.*?)\1\)/);
+      return match ? match[2] : '';
+    }catch(e){return '';}
+  }
+
+  function getItems(){
+    try{
+      if(typeof window.currentItems==='function') return window.currentItems() || [];
+      if(Array.isArray(window.contentItems)) return window.contentItems;
+      if(typeof contentItems !== 'undefined' && Array.isArray(contentItems)) return contentItems;
+    }catch(e){}
+    return [];
+  }
+
+  function getClientName(){
+    try{
+      if(window.context?.client) return window.context.client;
+      if(typeof context !== 'undefined' && context.client) return context.client;
+    }catch(e){}
+    const ids=['ctx-client','content-client','plan-client','cal-content-client'];
+    for(const id of ids){
+      const el=document.getElementById(id);
+      if(!el) continue;
+      if(el.tagName==='SELECT'){
+        const opt=el.options[el.selectedIndex];
+        if(opt?.textContent) return opt.textContent.trim();
+      }
+      if(el.value) return el.value.trim();
+    }
+    return '';
+  }
+
+  function getPeriod(){
+    try{
+      const ctx=window.context || (typeof context !== 'undefined' ? context : {});
+      if(ctx.month || ctx.year) return [ctx.month,ctx.year].filter(Boolean).join(' ');
+    }catch(e){}
+    const month=document.getElementById('ctx-month')?.value || document.getElementById('content-month')?.value || '';
+    const year=document.getElementById('ctx-year')?.value || document.getElementById('content-year')?.value || '';
+    return [month,year].filter(Boolean).join(' ');
+  }
+
+  function labelNetwork(v){
+    const raw=String(v||'').toLowerCase();
+    if(raw==='tiktok') return 'TikTok';
+    if(raw==='instagram') return 'Instagram';
+    if(raw==='ig_tk' || raw.includes('instagram + tiktok')) return 'Instagram + TikTok';
+    if(raw==='facebook') return 'Facebook';
+    if(raw==='blog') return 'Blog';
+    return String(v||'');
+  }
+
+  function labelFormat(v){
+    const raw=String(v||'');
+    return raw
+      .replace(/^🎬\s*/,'')
+      .replace(/^🖼️\s*/,'')
+      .replace(/^📚\s*/,'')
+      .replace(/^🎥\s*/,'')
+      .replace(/^✍️\s*/,'')
+      .trim();
+  }
+
+  function buildRows(){
+    const items=getItems();
+    if(!items.length){
+      return '<tr><td colspan="8" class="empty">No hay contenido registrado.</td></tr>';
+    }
+
+    return items.map((item,index)=>{
+      const date=esc(item.date || item.fecha || '');
+      const timeBase=String(item.time || item.hora || '').trim();
+      const ampm=String(item.ampm || '').split(' ')[0] || '';
+      const time=esc([timeBase,ampm].filter(Boolean).join(' '));
+      const red=esc(labelNetwork(item.network || item.red || ''));
+      const objetivo=esc(item.objective || item.objetivo || '');
+      const formato=esc(labelFormat(item.format || item.formato || ''));
+      const titulo=esc(item.title || item.titulo || '');
+      const categoria=esc(item.category || item.categoria || '');
+
+      return `<tr>
+        <td class="center">${index+1}</td>
+        <td class="center">${date}</td>
+        <td class="center">${time}</td>
+        <td class="center">${red}</td>
+        <td class="center">${objetivo}</td>
+        <td class="center">${formato}</td>
+        <td>${titulo}</td>
+        <td>${categoria}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function buildPrintHTML(){
+    const logo=getCssUrl('--aztra-logo-icon') || getCssUrl('--aztra-logo-full');
+    const client=esc(getClientName()) || '—';
+    const period=esc(getPeriod()) || '—';
+
+    return `<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Plan de Contenido - Aztra OS</title>
+<style>
+@page{size:A4 landscape;margin:12mm 11mm}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#111;font-family:Arial,Helvetica,sans-serif}
+.document{width:100%;background:#fff}
+.header{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;padding-bottom:9px;margin-bottom:10px;border-bottom:1.5px solid #111}
+h1{margin:0;font-size:21pt;line-height:1.05;font-weight:800;color:#000}
+.subtitle{margin-top:3px;font-size:9.5pt;color:#333}
+.logoBox{width:40px;height:40px;min-width:40px;border-radius:8px;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.logoBox img{width:28px;height:28px;object-fit:contain;display:block}
+.meta{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 10px 0;font-size:9.6pt;line-height:1.25}
+.meta strong{color:#000}
+table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:8.7pt}
+thead{display:table-header-group}
+tr{page-break-inside:avoid}
+th,td{border:1px solid #222;padding:6px 5px;vertical-align:top;line-height:1.16;color:#111;background:#fff;overflow-wrap:anywhere;word-break:normal}
+th{background:#f2f2f2;color:#000;text-align:center;font-size:8.1pt;font-weight:700}
+.center{text-align:center}
+.empty{text-align:center;color:#555;padding:12px}
+th:nth-child(1),td:nth-child(1){width:4%}
+th:nth-child(2),td:nth-child(2){width:10%}
+th:nth-child(3),td:nth-child(3){width:8%}
+th:nth-child(4),td:nth-child(4){width:9%}
+th:nth-child(5),td:nth-child(5){width:12%}
+th:nth-child(6),td:nth-child(6){width:12%}
+th:nth-child(7),td:nth-child(7){width:25%}
+th:nth-child(8),td:nth-child(8){width:20%}
+.footer{margin-top:8px;font-size:7.8pt;color:#555;text-align:right}
+@media print{
+  body{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}
+</style>
+</head>
+<body>
+<main class="document">
+<header class="header">
+  <div>
+    <h1>Plan de Contenido</h1>
+    <div class="subtitle">Documento de planificación editorial</div>
+  </div>
+  ${logo ? `<div class="logoBox"><img src="${logo}" alt="Aztra"></div>` : ''}
+</header>
+<section class="meta">
+  <div><strong>Cliente:</strong> ${client}</div>
+  <div><strong>Periodo:</strong> ${period}</div>
+</section>
+<table>
+  <thead>
+    <tr>
+      <th>N°</th>
+      <th>Fecha</th>
+      <th>Hora</th>
+      <th>Red</th>
+      <th>Objetivo</th>
+      <th>Formato</th>
+      <th>Título</th>
+      <th>Categoría</th>
+    </tr>
+  </thead>
+  <tbody>${buildRows()}</tbody>
+</table>
+<div class="footer">Aztra OS — Plan de Contenido</div>
+</main>
+</body>
+</html>`;
+  }
+
+  function buildInlinePrintPlan(){
+    const mount=document.getElementById('print-plan');
+    if(!mount) return;
+    mount.innerHTML=`<div class="aztra-print-doc">
+      <div class="aztra-print-head">
+        <div class="aztra-print-head-left">
+          <h1 class="aztra-print-title">Plan de Contenido</h1>
+          <p class="aztra-print-sub">Documento de planificación editorial</p>
+        </div>
+      </div>
+      <div class="aztra-print-meta">
+        <div><strong>Cliente:</strong> ${esc(getClientName()) || '—'}</div>
+        <div><strong>Periodo:</strong> ${esc(getPeriod()) || '—'}</div>
+      </div>
+      <table class="aztra-print-table">
+        <thead><tr>
+          <th>N°</th><th>Fecha</th><th>Hora</th><th>Red</th><th>Objetivo</th><th>Formato</th><th>Título</th><th>Categoría</th>
+        </tr></thead>
+        <tbody>${buildRows()}</tbody>
+      </table>
+    </div>`;
+  }
+
+  window.buildPrintPlan = buildInlinePrintPlan;
+  window.buildCleanPrintPlanFixed = buildInlinePrintPlan;
+
+  window.exportarPlanContenidoPDF=function(){
+    const printWindow=window.open('','_blank','width=1200,height=800');
+    if(!printWindow){
+      alert('El navegador bloqueó la ventana de impresión. Permite ventanas emergentes para exportar el PDF.');
+      return;
+    }
+
+    printWindow.document.open();
+    printWindow.document.write(buildPrintHTML());
+    printWindow.document.close();
+
+    const doPrint=function(){
+      try{
+        printWindow.focus();
+        printWindow.print();
+      }catch(e){}
+    };
+
+    printWindow.onload=function(){setTimeout(doPrint,250);};
+    setTimeout(doPrint,700);
+  };
+
+  window.addEventListener('beforeprint',buildInlinePrintPlan);
+  document.addEventListener('DOMContentLoaded',function(){
+    buildInlinePrintPlan();
+    setTimeout(buildInlinePrintPlan,400);
+    setTimeout(buildInlinePrintPlan,1200);
+  });
 })();
 </script>
 
